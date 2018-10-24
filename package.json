@@ -9,9 +9,11 @@
   },
   "scripts": {
     "start": "webpack --debug --watch",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "seed": "node database/seed.js"
   },
   "dependencies": {
+    "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mysql": "^2.16.0",

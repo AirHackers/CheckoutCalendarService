@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS reservations (
   nights INTEGER NOT NULL,
   guests INTEGER NOT NULL,
   price INTEGER NOT NULL,
-  startDate DATE NOT NULL,
-  endDate DATE NOT NULL,
+  startDate INTEGER NOT NULL,
+  endDate INTEGER NOT NULL,
   homeId INTEGER NOT NULL
 );
 
