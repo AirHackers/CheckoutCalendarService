@@ -13,7 +13,7 @@ var seedData = (db) => {
   var startDate = 1530403200;
 
   for (var i = 0; i < ROWS; i++) {
-    var nights = Math.floor(Math.random() * 5);
+    var nights = Math.floor(Math.random() * 5) + 1;
     var guests = Math.floor(Math.random() * 3) + 1;
 
     array.push({
