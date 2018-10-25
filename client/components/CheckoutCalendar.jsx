@@ -9,12 +9,12 @@ export default class CheckoutCalendar extends React.Component {
 
   render() {
     return (
-      <div className='card container'>
-        <span><strong>$118</strong> per night</span> 
+      <div className={this.props.small ? 'card container checkoutKeylinesTop' : 'card container'}>
+        <span className='checkoutKeylinesTop'><strong>$118</strong> per night</span> 
 
         <hr />
         <label>Dates</label>
-        <div className='row keylines'>
+        <div className='row checkoutKeylines'>
           <div className='col-md-6'>
             <input className='form-control' type='text' placeholder='Check in'></input>
           </div>
@@ -31,10 +31,10 @@ export default class CheckoutCalendar extends React.Component {
         </div>
 
         <div className='row'>
-          <button className='btnMargin col btn btn-danger' type='button'>Book</button>
+          <button className='checkoutBtnMargin col btn btn-danger' type='button'>Book</button>
         </div>
 
-        <label className='centerText'>You won’t be charged yet</label>
+        <label className='checkoutCenterText'>You won’t be charged yet</label>
       </div>
     );
   }

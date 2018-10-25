@@ -1,15 +1,19 @@
-.keylines {
+.checkoutKeylinesTop {
+  margin-top: 16px;
+}
+
+.checkoutKeylines {
   margin-bottom: 16px;
 }
 
-.btnMargin {
+.checkoutBtnMargin {
   margin: 16px;
 }
 
-.center {
-  margin: auto;
+.checkoutCenterText {
+  text-align: center;    
 }
 
-.centerText {
-  text-align: center;    
+.checkoutMaxWidth {
+  max-width: 400px;
 }
