@@ -33,9 +33,18 @@ class Models {
 
   // Adds a reservation object into the database. Returns a promise that indicates the result of the insert.
   static addReservation(db, data) {
-    const valueStr = Object.values(data).join(' ');
-    return db.queryAsync(`INSERT INTO reservations (nights, guests, price, startDate, endDate, homeId) VALUES (${valueStr});`);
-  }  
+    // Validate the date ranges, ensure there are no other reservations that conflict with the input date range
+    return db.queryAsync(`SELECT * FROM reservations WHERE startDate >= ${data.startDate} AND endDate <= ${data.endDate};`)
+    .then(result => {
+      if (result[0].length > 0) {
+        return {success: false};
+      }
+
+      const valueStr = Object.values(data).join(' ');
+      return db.queryAsync(`INSERT INTO reservations (nights, guests, price, startDate, endDate, homeId) VALUES (${valueStr});`)
+      .then(result => {success: true});
+    });
+  }
 }
 
 module.exports = Models;

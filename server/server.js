@@ -40,7 +40,7 @@ app.post('/api/reserve', (req, res, next) => {
   Models.addReservation(db, req.body)
   .then(result => {
     res.status(201).type('application/json');
-    res.send('{"success" : true}');
+    res.send(result);
   });
 });
 
