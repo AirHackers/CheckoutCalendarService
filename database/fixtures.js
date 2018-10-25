@@ -13,7 +13,7 @@ var seedData = (db) => {
   var startDate = 1530403200;
 
   for (var i = 0; i < ROWS; i++) {
-    var nights = Math.floor(Math.random() * 5) + 1;
+    var nights = Math.floor(Math.random() * 3) + 1;
     var guests = Math.floor(Math.random() * 3) + 1;
 
     array.push({
@@ -25,7 +25,8 @@ var seedData = (db) => {
       homeId: 0
     });
 
-    startDate += nights * SEC_IN_DAYS;
+    // Skip 0 days to a week to allow space for reservations
+    startDate += nights * SEC_IN_DAYS + (Math.floor(Math.random() * 7) * SEC_IN_DAYS);
   }
 
   // Convert the JSON to parenthesis for all elements
