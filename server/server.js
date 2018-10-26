@@ -15,11 +15,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Endpoints for the Checkout component
 
 // Get all the reverse dates for a given month
-app.get('/api/reserved', (req, res) => {
+app.get('/api/listings/:id/reserved', (req, res) => {
+  var id = Number.parseInt(req.params.id);
   var month = Number.parseInt(req.query.month);
   var year = Number.parseInt(req.query.year);
   
-  Models.getReservedDates(db, month, year)
+  Models.getReservedDates(db, id, month, year)
   .then(result => {
     res.status(200).type('application/json');
     res.send(JSON.stringify(result));
