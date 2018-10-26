@@ -20,6 +20,11 @@ app.get('/api/listings/:id/reserved', (req, res) => {
   var month = Number.parseInt(req.query.month);
   var year = Number.parseInt(req.query.year);
   
+  if (!month || !year) {
+    res.status(400).type('application/json');
+    res.send('{"success" : false, "error" : "Month and/or year is missing in query."}');
+  }
+  
   Models.getReservedDates(db, id, month, year)
   .then(result => {
     res.status(200).type('application/json');
@@ -41,7 +46,7 @@ app.post('/api/reserve', (req, res, next) => {
   Models.addReservation(db, req.body)
   .then(result => {
     res.status(201).type('application/json');
-    res.send(result);
+    res.send(JSON.stringify(result));
   });
 });
 
