@@ -1,7 +1,11 @@
 import React from 'react';
 
+import Guests from './Guests.jsx';
+
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
+
+// TODO: Use a ref for the input tags to directly control them on state change
 export default class CheckoutCalendar extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +29,7 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
 
-  // Load default price for one person, for one day
+  // On load, show price for 1 guest for 1 day
   componentDidMount() {
     this.loadPrice(this.state.guests, this.state.days);
   }
@@ -35,7 +39,7 @@ export default class CheckoutCalendar extends React.Component {
       <div className={this.props.small ? 'card container checkoutKeylinesTop' : 'card container'}>
         <span className='checkoutKeylinesTop'>
         { this.state.price ?
-          <label><strong>${this.state.price}</strong> per night</label> : <label>Loading...</label>
+          <span><strong>${this.state.price}</strong> per night</span> : <span>Loading...</span>
         }
         </span>
 
@@ -56,6 +60,8 @@ export default class CheckoutCalendar extends React.Component {
             <input className='form-control' type='text' placeholder='1 Guest'></input>
           </div>
         </div>
+        
+        <Guests />
 
         <div className='row'>
           <button className='checkoutBtnMargin col btn btn-danger' type='button'>Book</button>
