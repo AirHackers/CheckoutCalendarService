@@ -1,26 +1,33 @@
 import React from 'react';
 
 // Subcomponent for the buttons and the quantity for a given row
-var GuestChooser = props => (
-  <div className='row checkoutKeylines'>
-    <div className='col'>
-      <button className={ props.quantity === 0 ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary'}>-</button>
+var GuestChooser = props => {
+  const firstClass = props.quantity === 0 ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
+  const secondClass = props.quantity === props.limit || props.total >= props.limit ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
+  
+  return (
+    <div className='row checkoutKeylines'>
+      <div className='col'>
+        <button className={firstClass} onClick={props.leftBtn.bind(this, props.idx)}>-</button>
+      </div>
+      <div className='col'>
+        <span>{props.quantity}</span>
+      </div>
+      <div className='col'>
+        <button className={secondClass} onClick={props.rightBtn.bind(this, props.idx)}>+</button>
+      </div>
     </div>
-    <div className='col'>
-      <span>{props.quantity}</span>
-    </div>
-    <div className='col'>
-      <button className={ props.quantity === props.limit ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary'}>+</button>
-    </div>
-  </div>
-);
+  );
+};
 
 // Subcomponent for the guest type and quantity
 var GuestRow = props => (
   <div className={props.top ? 'row checkoutKeylinesTop' : 'row'}>
-    <div className='col'>{props.input}</div>
     <div className='col'>
-      <GuestChooser quantity={0} limit={4} />
+      {props.input}
+    </div>
+    <div className='col'>
+      <GuestChooser quantity={props.quantity} limit={props.limit} idx={props.idx} total={props.total} leftBtn={props.leftBtn} rightBtn={props.rightBtn} />
     </div>
   </div>
 );
@@ -34,9 +41,12 @@ export default class Guests extends React.Component {
   render() {
     return (
       <div className='card container'>
-        <GuestRow top={true} input='Adults' />
-        <GuestRow input='Children' />
-        <GuestRow input='Infants' />
+        <GuestRow top={true} input='Adults' quantity={this.props.adults} total={this.props.total} limit={this.props.limit} idx={0} 
+          leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
+        <GuestRow input='Children' quantity={this.props.children} total={this.props.total} limit={this.props.limit} idx={1} 
+          leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
+        <GuestRow input='Infants' quantity={this.props.infants} total={this.props.total} limit={this.props.limit} idx={2} 
+          leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
         <div className='row checkoutKeylines'>
           {/* Invisible divs to position the button */}
           <div className='col-md-6'></div>

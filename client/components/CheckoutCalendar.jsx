@@ -10,11 +10,13 @@ export default class CheckoutCalendar extends React.Component {
   constructor(props) {
     super(props);
 
+    // TODO: Property data needs to be acquired from the homes database
     this.state = {
-      guests: 1,
       days: 1,
       price: null,
-      personPerNight: null
+      personPerNight: null,
+      guests: [1, 0, 0],
+      limit: 10,
     };
   }
 
@@ -29,9 +31,29 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
 
+  getTotalGuests() {
+    return this.state.guests.reduce((a, b) => a + b);
+  }
+
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.state.guests, this.state.days);
+    this.loadPrice(this.getTotalGuests(), this.state.days);
+  }
+
+  leftBtnFor(idx) {
+    var guests = this.state.guests;
+    if (guests[idx] !== 0) {
+      guests[idx]--;
+      this.setState({guests});
+    }
+  }
+
+  rightBtnFor(idx) {
+    var guests = this.state.guests;
+    if (this.getTotalGuests() < this.state.limit) {
+      guests[idx]++;
+      this.setState({guests});
+    }
   }
 
   render() {
@@ -60,8 +82,10 @@ export default class CheckoutCalendar extends React.Component {
             <input className='form-control' type='text' placeholder='1 Guest'></input>
           </div>
         </div>
-        
-        <Guests />
+
+        <Guests adults={this.state.guests[0]} children={this.state.guests[1]} infants={this.state.guests[2]}
+          limit={this.state.limit} total={this.getTotalGuests()}
+          leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} />
 
         <div className='row'>
           <button className='checkoutBtnMargin col btn btn-danger' type='button'>Book</button>
