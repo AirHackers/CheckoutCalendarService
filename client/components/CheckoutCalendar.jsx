@@ -17,9 +17,10 @@ export default class CheckoutCalendar extends React.Component {
       personPerNight: null,
       guests: [1, 0, 0],
       limit: 10,
+      showGuests: false
     };
 
-    // Add ref to allow changing of guest input
+    // Add ref to allow changing of guest input, and detect if clicked outside
     this.guestRef = React.createRef();
   }
 
@@ -42,6 +43,9 @@ export default class CheckoutCalendar extends React.Component {
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
     this.loadPrice(this.getTotalGuests(), this.state.days);
+    
+    // Cache guest element, create listener to check clicks outside it
+    document.addEventListener('mousedown', this.onOutsideClick.bind(this));
   }
 
   leftBtnFor(idx) {
@@ -60,6 +64,22 @@ export default class CheckoutCalendar extends React.Component {
       this.setState({guests});
       this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
     }
+  }
+  
+  // Hide guest component if clicked outside of it and click not on guest text
+  onOutsideClick(event) {
+    const guestDiv = document.getElementById('guests');
+    const clickedOutsideGuest = guestDiv && event.target.id !== 'guestText' && !guestDiv.contains(event.target);
+
+    if (clickedOutsideGuest && this.state.showGuests) {
+      this.onToggleGuests();
+    }
+  }
+  
+  onToggleGuests() {
+    this.setState({
+      showGuests: !this.state.showGuests
+    });
   }
 
   render() {
@@ -85,13 +105,15 @@ export default class CheckoutCalendar extends React.Component {
         <label>Guests</label>
         <div className='row'>
           <div className='col'>
-            <input ref={this.guestRef} className='form-control' type='text' defaultValue='1 Guest' readOnly></input>
+            <input id='guestText' ref={this.guestRef} className='form-control' type='text' defaultValue='1 Guest' onClick={this.onToggleGuests.bind(this)} readOnly></input>
           </div>
         </div>
 
-        <Guests adults={this.state.guests[ADULTS]} children={this.state.guests[CHILDREN]} infants={this.state.guests[INFANTS]}
-          limit={this.state.limit} total={this.getTotalGuests()}
-          leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} />
+        { this.state.showGuests &&
+          <Guests adults={this.state.guests[ADULTS]} children={this.state.guests[CHILDREN]} infants={this.state.guests[INFANTS]}
+            limit={this.state.limit} total={this.getTotalGuests()}
+            leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} close={this.onToggleGuests.bind(this)}/>
+        }
 
         <div className='row'>
           <button className='checkoutBtnMargin col btn btn-danger' type='button'>Book</button>

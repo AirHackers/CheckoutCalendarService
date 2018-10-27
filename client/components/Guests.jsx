@@ -41,7 +41,7 @@ export default class Guests extends React.Component {
 
   render() {
     return (
-      <div className='card container'>
+      <div id='guests' className='card container'>
         <GuestRow top={true} input='Adults' quantity={this.props.adults} total={this.props.total} limit={this.props.limit} idx={0} 
           leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
         <GuestRow input='Children' quantity={this.props.children} total={this.props.total} limit={this.props.limit} idx={1} 
@@ -53,7 +53,7 @@ export default class Guests extends React.Component {
           {/* Invisible divs to position the button */}
           <div className='col-md-6'></div>
           <div className='col-md-4'>
-            <button className='btn btn-outline-primary checkoutFloatRight'>Close</button>
+            <button className='btn btn-outline-primary checkoutFloatRight' onClick={this.props.close}>Close</button>
           </div>
           <div className='col-md-2'></div>
         </div>
