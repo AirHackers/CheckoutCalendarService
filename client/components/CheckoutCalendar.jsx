@@ -16,6 +16,7 @@ export default class CheckoutCalendar extends React.Component {
       price: null,
       personPerNight: null,
       guests: [1, 0, 0],
+      prevTotalGuests: 1,
       limit: 10,
       showGuests: false
     };
@@ -76,8 +77,14 @@ export default class CheckoutCalendar extends React.Component {
     }
   }
   
+  // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
+    if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
+      this.loadPrice(this.getTotalGuests(), this.state.days);
+    }
+
     this.setState({
+      prevTotalGuests: this.getTotalGuests(),
       showGuests: !this.state.showGuests
     });
   }
@@ -86,8 +93,8 @@ export default class CheckoutCalendar extends React.Component {
     return (
       <div className={this.props.small ? 'card container checkoutKeylinesTop' : 'card container'}>
         <span className='checkoutKeylinesTop'>
-        { this.state.price ?
-          <span><strong>${this.state.price}</strong> per night</span> : <span>Loading...</span>
+        { this.state.personPerNight ?
+          <span><strong>${this.state.personPerNight}</strong> per night</span> : <span>Loading...</span>
         }
         </span>
 
