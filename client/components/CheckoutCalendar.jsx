@@ -2,10 +2,10 @@ import React from 'react';
 
 import Guests from './Guests.jsx';
 
+const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
+
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
-
-// TODO: Use a ref for the input tags to directly control them on state change
 export default class CheckoutCalendar extends React.Component {
   constructor(props) {
     super(props);
@@ -18,6 +18,9 @@ export default class CheckoutCalendar extends React.Component {
       guests: [1, 0, 0],
       limit: 10,
     };
+
+    // Add ref to allow changing of guest input
+    this.guestRef = React.createRef();
   }
 
   loadPrice(guests, days) {
@@ -31,8 +34,9 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
 
+  // Total guests don't count the number of infants
   getTotalGuests() {
-    return this.state.guests.reduce((a, b) => a + b);
+    return this.state.guests[ADULTS] + this.state.guests[CHILDREN];
   }
 
   // On load, show price for 1 guest for 1 day
@@ -45,14 +49,16 @@ export default class CheckoutCalendar extends React.Component {
     if (guests[idx] !== 0) {
       guests[idx]--;
       this.setState({guests});
+      this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
     }
   }
 
   rightBtnFor(idx) {
     var guests = this.state.guests;
-    if (this.getTotalGuests() < this.state.limit) {
+    if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
       guests[idx]++;
       this.setState({guests});
+      this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
     }
   }
 
@@ -79,11 +85,11 @@ export default class CheckoutCalendar extends React.Component {
         <label>Guests</label>
         <div className='row'>
           <div className='col'>
-            <input className='form-control' type='text' placeholder='1 Guest'></input>
+            <input ref={this.guestRef} className='form-control' type='text' defaultValue='1 Guest' readOnly></input>
           </div>
         </div>
 
-        <Guests adults={this.state.guests[0]} children={this.state.guests[1]} infants={this.state.guests[2]}
+        <Guests adults={this.state.guests[ADULTS]} children={this.state.guests[CHILDREN]} infants={this.state.guests[INFANTS]}
           limit={this.state.limit} total={this.getTotalGuests()}
           leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} />
 

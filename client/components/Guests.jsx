@@ -2,8 +2,8 @@ import React from 'react';
 
 // Subcomponent for the buttons and the quantity for a given row
 var GuestChooser = props => {
-  const firstClass = props.quantity === 0 ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
-  const secondClass = props.quantity === props.limit || props.total >= props.limit ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
+  const firstClass = props.quantity === 0 && !props.infant ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
+  const secondClass = props.quantity === props.limit || props.total >= props.limit && !props.infant ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
   
   return (
     <div className='row checkoutKeylines'>
@@ -27,7 +27,8 @@ var GuestRow = props => (
       {props.input}
     </div>
     <div className='col'>
-      <GuestChooser quantity={props.quantity} limit={props.limit} idx={props.idx} total={props.total} leftBtn={props.leftBtn} rightBtn={props.rightBtn} />
+      <GuestChooser quantity={props.quantity} limit={props.limit} idx={props.idx} total={props.total} infant={props.infant}
+        leftBtn={props.leftBtn} rightBtn={props.rightBtn} />
     </div>
   </div>
 );
@@ -45,8 +46,9 @@ export default class Guests extends React.Component {
           leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
         <GuestRow input='Children' quantity={this.props.children} total={this.props.total} limit={this.props.limit} idx={1} 
           leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
-        <GuestRow input='Infants' quantity={this.props.infants} total={this.props.total} limit={this.props.limit} idx={2} 
+        <GuestRow input='Infants' quantity={this.props.infants} total={this.props.total} limit={this.props.limit} idx={2} infant={true}
           leftBtn={this.props.leftBtn} rightBtn={this.props.rightBtn} />
+        <label className='checkoutCenterText'>{this.props.limit} guests maximum. Infants don’t count toward the number of guests.</label>
         <div className='row checkoutKeylines'>
           {/* Invisible divs to position the button */}
           <div className='col-md-6'></div>
