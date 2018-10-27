@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Guests from './Guests.jsx';
+import Breakdown from './Breakdown.jsx';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
 
@@ -15,6 +16,7 @@ export default class CheckoutCalendar extends React.Component {
       days: 1,
       price: null,
       personPerNight: null,
+      cleaning: null,
       guests: [1, 0, 0],
       prevTotalGuests: 1,
       limit: 10,
@@ -31,7 +33,8 @@ export default class CheckoutCalendar extends React.Component {
     .then(response => {
       this.setState({
         price: response.totalCost,
-        personPerNight: response.personPerNight
+        personPerNight: response.personPerNight,
+        cleaning: response.cleaning
       });
     });
   }
@@ -120,6 +123,10 @@ export default class CheckoutCalendar extends React.Component {
           <Guests adults={this.state.guests[ADULTS]} children={this.state.guests[CHILDREN]} infants={this.state.guests[INFANTS]}
             limit={this.state.limit} total={this.getTotalGuests()}
             leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} close={this.onToggleGuests.bind(this)}/>
+        }
+
+        { this.state.price &&
+          <Breakdown perPerson={this.state.personPerNight} nights={this.state.days} cleaning={this.state.cleaning} total={this.state.price} />
         }
 
         <div className='row'>

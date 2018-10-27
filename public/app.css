@@ -21,3 +21,7 @@
 .checkoutFloatRight {
   float: right;
 }
+
+.checkoutRightText {
+  text-align: right;
+}
