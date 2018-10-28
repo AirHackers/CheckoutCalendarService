@@ -1,6 +1,5 @@
 import { shallow, mount, render } from 'enzyme';
 import React from 'react';
-import renderer from 'react-test-renderer';
 
 import Guests from '../../client/components/Guests.jsx';
 
@@ -25,17 +24,17 @@ describe('Guests component test suite', function() {
   it('should be selectable by class "guests"', function() {
     // Shallow will render the component but not its children components.
     var shallowComp = shallow(
-      <Guests input='Adults' quantity={5} total={5} limit={10} idx={0} 
+      <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
     );
     expect(shallowComp.is('#guests')).toBe(true);
   });
 
   it('should mount in a full DOM and have seven buttons', function() {
-    var comp = mount((
+    var comp = mount(
       <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
-    ));
+    );
     
     // Just call find to determine the number of certain DOM elements.
     expect(comp.find('#guests').length).toBe(1);
@@ -43,10 +42,10 @@ describe('Guests component test suite', function() {
   });
   
   it('should gray out buttons when limit is reached', function() {
-    var comp = mount((
+    var comp = mount(
       <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
-    ));
+    );
     
     // Find the plus button in the adults row, and call its onClick function
     var adultPlusBtn = comp.find('.btn-outline-primary').getElements()[1];
@@ -65,10 +64,10 @@ describe('Guests component test suite', function() {
 
   it('should render to static HTML', function() {
     var rowString = 'Adults';
-    var rendered = render((
+    var rendered = render(
       <Guests adults={0} children={0} infants={0} limit={10} total={5} 
         leftBtn={left} rightBtn={right} />
-    ));
+    );
     expect(rendered.text().indexOf(rowString)).toBeGreaterThan(-1);
   });
 });
