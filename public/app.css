@@ -27,9 +27,14 @@
 }
 
 .checkoutWeekDay {
-  display: inline-block;
   text-align: center;
   width: 41px;
+}
+
+.checkoutCell {
+  text-align: center;
+  width: 41px;
+  height: 41px;
 }
 
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
