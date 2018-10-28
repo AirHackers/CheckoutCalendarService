@@ -25,3 +25,8 @@
 .checkoutRightText {
   text-align: right;
 }
+
+/* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
+input[type="text"][readOnly] {
+  background-color: #fff;
+}

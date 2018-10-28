@@ -105,10 +105,10 @@ export default class CheckoutCalendar extends React.Component {
         <label>Dates</label>
         <div className='row checkoutKeylines'>
           <div className='col-md-6'>
-            <input className='form-control' type='text' placeholder='Check in'></input>
+            <input className='form-control' type='text' defaultValue='Check in' readOnly></input>
           </div>
           <div className='col-md-6'>
-            <input className='form-control' type='text' placeholder='Check out'></input>
+            <input className='form-control' type='text' defaultValue='Check out' readOnly></input>
           </div>
         </div>
 
