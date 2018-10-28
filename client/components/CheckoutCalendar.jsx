@@ -94,7 +94,7 @@ export default class CheckoutCalendar extends React.Component {
 
   render() {
     return (
-      <div className={this.props.small ? 'card container checkoutKeylinesTop' : 'card container'}>
+      <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
         <span className='checkoutKeylinesTop'>
         { this.state.personPerNight ?
           <span><strong>${this.state.personPerNight}</strong> per night</span> : <span>Loading...</span>

@@ -26,6 +26,12 @@
   text-align: right;
 }
 
+.checkoutWeekDay {
+  display: inline-block;
+  text-align: center;
+  width: 41px;
+}
+
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
 input[type="text"][readOnly] {
   background-color: #fff;
