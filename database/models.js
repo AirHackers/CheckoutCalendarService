@@ -12,17 +12,18 @@ class Models {
   }
   
   // Returns a promise with the reserved dates, due to needing a DB selection query.
-  static getReservedDates(db, month, year) {
+  static getReservedDates(db, id, month, year) {
     const startVal = new Date(year, month).getTime() / MILLI_IN_SECS;
     const endVal = new Date(year, month + 1).getTime() / MILLI_IN_SECS;
 
-    return db.queryAsync(`SELECT * FROM reservations WHERE startDate >= ${startVal} AND endDate <= ${endVal};`)
+    return db.queryAsync(`SELECT * FROM reservations WHERE homeId = ${id} AND startDate >= ${startVal} AND endDate <= ${endVal};`)
     .then(data => {
       return data[0].map(obj => this.getDays(obj.startDate, obj.endDate));
     });
   }
 
   // Returns an object that represents information for the checkout module
+  // TODO: Formula needs to depend on data from a listing based on the foreign key ID
   static calcPrice(nights, guests) {
     return {
       totalCost: (100 + 7 * guests) * nights + 50,
@@ -40,8 +41,7 @@ class Models {
         return {success: false};
       }
 
-      const valueStr = Object.values(data).join(' ');
-      return db.queryAsync(`INSERT INTO reservations (nights, guests, price, startDate, endDate, homeId) VALUES (${valueStr});`)
+      return db.queryAsync(`INSERT INTO reservations (nights, guests, price, startDate, endDate, homeId) VALUES (?, ?, ?, ?, ?, ?);`, Object.values(data))
       .then(result => {success: true});
     });
   }

@@ -15,11 +15,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Endpoints for the Checkout component
 
 // Get all the reverse dates for a given month
-app.get('/api/reserved', (req, res) => {
+app.get('/api/listings/:id/reserved', (req, res) => {
+  var id = Number.parseInt(req.params.id);
   var month = Number.parseInt(req.query.month);
   var year = Number.parseInt(req.query.year);
   
-  Models.getReservedDates(db, month, year)
+  if (!month || !year) {
+    res.status(400).type('application/json');
+    res.send('{"success" : false, "error" : "Month and/or year is missing in query."}');
+  }
+  
+  Models.getReservedDates(db, id, month, year)
   .then(result => {
     res.status(200).type('application/json');
     res.send(JSON.stringify(result));
@@ -40,7 +46,7 @@ app.post('/api/reserve', (req, res, next) => {
   Models.addReservation(db, req.body)
   .then(result => {
     res.status(201).type('application/json');
-    res.send(result);
+    res.send(JSON.stringify(result));
   });
 });
 
