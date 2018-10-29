@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WEEK_ROWS = 6, DAY_COLS = 7;
+const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
 
 export default class CheckoutCalendar extends React.Component {
   constructor(props) {
@@ -59,20 +59,25 @@ export default class CheckoutCalendar extends React.Component {
     let day = 0 - firstDay + 1; // firstDay - 1 iterations before adding days
     
     let currDate = new Date(year, month);
-    let midnightToday = new Date().setHours(0,0,0,0);
+    let midnightTmw = new Date().setHours(24,0,0,0);
 
     // Update the date for the day being inserted, then determine
-    // if the date is in the past.
-    for (let i = 0; i < WEEK_ROWS; i += 1) {
+    // if the date is in the past. Also check if six rows needed
+    let rows = firstDay + lastDay > CELL_THRESHOLD ? SIX_WEEK_ROWS : WEEK_ROWS;
+    for (let i = 0; i < rows; i += 1) {
       let week = [];
       for (let j = 0; j < DAY_COLS; j += 1) {
         if (day >= 1 && day <= lastDay) {
           currDate.setDate(day);
         }
 
-        let css = currDate.getTime() < midnightToday ? 'col checkoutPast' : 'col checkoutCell';
+        let css = currDate.getTime() < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
+        let dayVal = day < 1 || day > lastDay ? null : day;
+        if (dayVal && currDate.getTime() >= midnightTmw) {
+          css += ' checkoutAvailable';
+        }
 
-        week.push({day: day < 1 || day > lastDay ? null : day, css});
+        week.push({day: dayVal, css});
         day += 1;
       }
       result.push(week);
@@ -84,7 +89,7 @@ export default class CheckoutCalendar extends React.Component {
   render() {
     return (
       <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
-        <div className='row'>
+        <div className='row checkoutKeylinesTop'>
           <div className='col-md-3'>
             <button className='btn btn-sm btn-outline-primary' onClick={this.onBtnClick.bind(this, true)}>←</button>
           </div>
@@ -110,7 +115,7 @@ export default class CheckoutCalendar extends React.Component {
           ))
         }
 
-        <div className='row'>
+        <div className='row checkoutKeylines'>
           <div className='col-md-8'>
             Updated 3 days ago
           </div>
