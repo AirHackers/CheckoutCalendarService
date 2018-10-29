@@ -57,11 +57,22 @@ export default class CheckoutCalendar extends React.Component {
     let firstDay = this.firstDayOfWeekFor(month, year);
     let lastDay = this.daysInMonth[month];
     let day = 0 - firstDay + 1; // firstDay - 1 iterations before adding days
+    
+    let currDate = new Date(year, month);
+    let midnightToday = new Date().setHours(0,0,0,0);
 
-    for (var i = 0; i < WEEK_ROWS; i += 1) {
-      var week = [];
-      for (var j = 0; j < DAY_COLS; j += 1) {
-        week.push( day < 1 || day > lastDay ? null : day);
+    // Update the date for the day being inserted, then determine
+    // if the date is in the past.
+    for (let i = 0; i < WEEK_ROWS; i += 1) {
+      let week = [];
+      for (let j = 0; j < DAY_COLS; j += 1) {
+        if (day >= 1 && day <= lastDay) {
+          currDate.setDate(day);
+        }
+
+        let css = currDate.getTime() < midnightToday ? 'col checkoutPast' : 'col checkoutCell';
+
+        week.push({day: day < 1 || day > lastDay ? null : day, css});
         day += 1;
       }
       result.push(week);
@@ -93,7 +104,7 @@ export default class CheckoutCalendar extends React.Component {
           this.getCellInfo(this.state.month, this.state.year).map(week => (
             <div className='row'>
               { /* if day is null, nothing gets rendered */
-                week.map(day => ( <div className='col checkoutCell'>{day}</div> ))
+                week.map(obj => ( <div className={obj.css}>{obj.day}</div> ))
               }
             </div>
           ))

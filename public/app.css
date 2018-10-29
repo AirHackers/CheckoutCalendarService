@@ -37,6 +37,15 @@
   height: 41px;
 }
 
+
+/* Duplicate properties so past dates can't get highlighted */
+.checkoutPast {
+  text-decoration: line-through;
+  text-align: center;
+  width: 41px;
+  height: 41px;
+}
+
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
 input[type="text"][readOnly] {
   background-color: #fff;
