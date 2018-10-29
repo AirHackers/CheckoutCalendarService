@@ -37,6 +37,9 @@
   height: 41px;
 }
 
+.checkoutCell:hover {
+  background-color: rgb(231, 231, 231);
+}
 
 /* Duplicate properties so past dates can't get highlighted */
 .checkoutPast {
