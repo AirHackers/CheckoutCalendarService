@@ -33,12 +33,13 @@ app.get('/api/listings/:id/reserved', (req, res) => {
 });
 
 // Given inputs for number of nights, guests, return JSON for the rental cost
-app.get('/api/compute', (req, res) => {
+app.get('/api/listings/:id/compute', (req, res) => {
+  var id = Number.parseInt(req.params.id);
   var nights = Number.parseInt(req.query.nights) || 1;
   var guests = Number.parseInt(req.query.guests) || 1;
 
   res.status(200).type('application/json');
-  res.send(JSON.stringify(Models.calcPrice(nights, guests)));
+  res.send(JSON.stringify(Models.calcPrice(id, nights, guests)));
 });
 
 // Save body to DB

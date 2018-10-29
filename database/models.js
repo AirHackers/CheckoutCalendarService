@@ -24,7 +24,7 @@ class Models {
 
   // Returns an object that represents information for the checkout module
   // TODO: Formula needs to depend on data from a listing based on the foreign key ID
-  static calcPrice(nights, guests) {
+  static calcPrice(id, nights, guests) {
     return {
       totalCost: (100 + 7 * guests) * nights + 50,
       personPerNight: (100 + 7 * guests),

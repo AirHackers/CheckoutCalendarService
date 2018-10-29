@@ -12,7 +12,9 @@ export default class CheckoutCalendar extends React.Component {
     super(props);
 
     // TODO: Property data needs to be acquired from the homes database
+    // TODO: Use react router to get the ID
     this.state = {
+      id: 0,
       days: 1,
       price: null,
       personPerNight: null,
@@ -27,8 +29,8 @@ export default class CheckoutCalendar extends React.Component {
     this.guestRef = React.createRef();
   }
 
-  loadPrice(guests, days) {
-    fetch(`/api/compute?guests=${guests}&days=${days}`)
+  loadPrice(id, guests, days) {
+    fetch(`/api/listings/${id}/compute?guests=${guests}&days=${days}`)
     .then(response => response.json())
     .then(response => {
       this.setState({
@@ -46,7 +48,7 @@ export default class CheckoutCalendar extends React.Component {
 
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.getTotalGuests(), this.state.days);
+    this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
     
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
@@ -83,7 +85,7 @@ export default class CheckoutCalendar extends React.Component {
   // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
     if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
-      this.loadPrice(this.getTotalGuests(), this.state.days);
+      this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
     }
 
     this.setState({
