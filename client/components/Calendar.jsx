@@ -75,16 +75,31 @@ export default class CheckoutCalendar extends React.Component {
       });
     });
   }
+  
+  // Determine if a range contains a reserved day
+  isRangeBookable(start, end) {
+    for (let i = start; i <= end; i++) {
+      if (this.state.reservedSet.has(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   // If neither check day has been set, set the check in date
   // If checkIn has been set, set the checkout date
   onCellClick(month, year, event) {
     // Validate the date is correct, first by checking the event target text
-    const day = event.target.textContent;
+    const day = Number.parseInt(event.target.textContent);
 
-    if (day) {
+    if (day && !this.state.reservedSet.has(day)) {
       const clickDate = new Date(year, month, day);
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
+      
+      // Don't highlight a check out date if not bookable
+      if (!this.state.isChoosingCheckIn && !this.isRangeBookable(new Date(this.state.checkinDay).getDate(), clickDate.getDate())) {
+        return;
+      }
 
       if (clickDate.getTime() > midnightTmw) {
         // Determine whether to set this date as check out or check in
