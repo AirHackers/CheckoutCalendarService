@@ -59,7 +59,7 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   leftBtnFor(idx) {
-    var guests = this.state.guests;
+    let guests = this.state.guests;
     if (guests[idx] !== 0) {
       guests[idx]--;
       this.setState({guests});
@@ -68,7 +68,7 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   rightBtnFor(idx) {
-    var guests = this.state.guests;
+    let guests = this.state.guests;
     if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
       guests[idx]++;
       this.setState({guests});

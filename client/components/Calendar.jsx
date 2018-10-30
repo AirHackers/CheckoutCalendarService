@@ -3,7 +3,7 @@ import React from 'react';
 const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
 const server = 'http://127.0.0.1:3004/';
 
-var CalendarHeader = props => (
+const CalendarHeader = props => (
   <div className='row checkoutKeylinesTop'>
     <div className='col-md-3'>
       <button className='btn btn-sm btn-outline-primary' onClick={props.onBtnClick.bind(this, true)}>←</button>
@@ -17,7 +17,7 @@ var CalendarHeader = props => (
   </div>
 );
 
-var CalendarFooter = props => (
+const CalendarFooter = props => (
   <div className='row checkoutKeylines'>
     <div className='col-md-8'>{props.lastUpdated}</div>
     <div className='col-md-4'>

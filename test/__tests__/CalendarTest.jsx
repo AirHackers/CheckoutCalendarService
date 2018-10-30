@@ -43,22 +43,22 @@ describe('Calendar headeronent test suite', function() {
     header.update();
     expect(year).toBe(2019);
 
-    let text = header.find('.checkoutCenterText');
-    let resultText = text.find('strong').props().children;
+    const text = header.find('.checkoutCenterText');
+    const resultText = text.find('strong').props().children;
     expect(resultText).toBe('January 2019');
   });
   
   it('should display the correct number of rows based on the month', function() {
     // TODO: Doesn't take props yet, this will need to be refactored too.
-    let calendar = mount(
+    const calendar = mount(
       <Calendar small />
     );
     
     // Locate the right sided button by selecting with two classes, simulate clicks
-    var rightBtn = calendar.find('.btn-sm.checkoutFloatRight');
+    const rightBtn = calendar.find('.btn-sm.checkoutFloatRight');
     
     // Find the number of calendar rows, verify the correct number based on the current month
-    var rows = calendar.find('.checkoutCalRow');
+    let rows = calendar.find('.checkoutCalRow');
     expect(rows.length).toBe(6); // September 2018 has 6 rows in the calendar
     
     rightBtn.simulate('click');
