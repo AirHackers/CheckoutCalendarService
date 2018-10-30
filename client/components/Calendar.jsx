@@ -15,6 +15,7 @@ export default class CheckoutCalendar extends React.Component {
       isChoosingCheckIn: true,
       checkinDay: null,
       checkoutDay: null,
+      currHovered: null,
       reservedSet: new Set()
     };
 
@@ -31,7 +32,7 @@ export default class CheckoutCalendar extends React.Component {
     .then(response => response.json())
     .then(reservations => {
       // Fill reserved set with all dates for each range
-      var reservedSet = new Set();
+      let reservedSet = new Set();
       for (let pair of reservations) {
         for (let i = pair[0]; i <= pair[1]; i++) {
           reservedSet.add(i);
@@ -56,8 +57,8 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   onBtnClick(left) {
-    var month = this.state.month;
-    var year = this.state.year;
+    let month = this.state.month;
+    let year = this.state.year;
 
     if (left) {
       year = month > 0 ? year : year - 1;
@@ -75,8 +76,9 @@ export default class CheckoutCalendar extends React.Component {
       });
     });
   }
-  
+
   // Determine if a range contains a reserved day
+  // TODO: Refactor with bit vector to make it faster
   isRangeBookable(start, end) {
     for (let i = start; i <= end; i++) {
       if (this.state.reservedSet.has(i)) {
@@ -96,8 +98,8 @@ export default class CheckoutCalendar extends React.Component {
       const clickDate = new Date(year, month, day);
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
       
-      // Don't highlight a check out date if not bookable
-      if (!this.state.isChoosingCheckIn && !this.isRangeBookable(new Date(this.state.checkinDay).getDate(), clickDate.getDate())) {
+      // Don't highlight a date if not bookable
+      if (!this.isRangeBookable(new Date(this.state.checkinDay).getDate(), clickDate.getDate())) {
         return;
       }
 
@@ -119,12 +121,24 @@ export default class CheckoutCalendar extends React.Component {
       }
     }
   }
+  
+  // If date is valid, save the current date being hovered over
+  onCellEnter(month, year, event) {
+    const day = Number.parseInt(event.target.textContent);
+    
+    if (day) {
+      this.setState({
+        currHovered: new Date(year, month, day).getTime()
+      });
+    }
+  }
 
   onClear(event) {
     this.setState({
       isChoosingCheckIn: true,
       checkinDay: null,
-      checkoutDay: null
+      checkoutDay: null,
+      currHovered: null
     });
   }
 
@@ -148,16 +162,20 @@ export default class CheckoutCalendar extends React.Component {
           currDate.setDate(day);
         }
 
-        // Determine the CSS class for the cell. This allows it to respond to hovering, show as selected, past today, or reserved 
-        let css = currDate.getTime() < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
+        // Determine the CSS class for the cell. This allows it to respond to hovering, show as selected, past today, or reserved
+        let currTime = currDate.getTime();
+        let css = currTime < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
         let dayVal = day < 1 || day > lastDay ? null : day;
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
-        } else if (dayVal && currDate.getTime() > this.state.checkinDay && currDate.getTime() < this.state.checkoutDay) {
+        } else if (dayVal && currTime > this.state.checkinDay && currTime < this.state.checkoutDay) {
           css += ' checkoutReserveRange';
-        } else if (dayVal && currDate.getTime() === this.state.checkinDay || currDate.getTime() === this.state.checkoutDay) {
+        } else if (dayVal && currTime === this.state.checkinDay || currTime === this.state.checkoutDay) {
           css += ' checkoutReserveEnd';
-        } else if (dayVal && currDate.getTime() >= midnightTmw) {
+        } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered 
+          && currTime >= this.state.checkinDay && currTime <= this.state.currHovered && this.isRangeBookable(new Date(this.state.checkinDay).getDate(), currDate.getDate())) {
+          css += ' checkoutSelection';
+        } else if (dayVal && currTime >= midnightTmw) {
           css += ' checkoutAvailable';
         }
 
@@ -193,7 +211,8 @@ export default class CheckoutCalendar extends React.Component {
           this.getCellInfo(this.state.month, this.state.year).map(week => (
             <div className='row'>
               { /* if day is null, nothing gets rendered */
-                week.map(obj => ( <div className={obj.css} onClick={this.onCellClick.bind(this, this.state.month, this.state.year)}>{obj.day}</div> ))
+                week.map(obj => ( <div className={obj.css} onClick={this.onCellClick.bind(this, this.state.month, this.state.year)}
+                onMouseEnter={this.onCellEnter.bind(this, this.state.month, this.state.year)} >{obj.day}</div> ))
               }
             </div>
           ))
