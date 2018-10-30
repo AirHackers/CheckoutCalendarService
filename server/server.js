@@ -20,7 +20,7 @@ app.get('/api/listings/:id/reserved', (req, res) => {
   var month = Number.parseInt(req.query.month);
   var year = Number.parseInt(req.query.year);
   
-  if (id !== NaN || !month || !year) {
+  if (isNaN(id) || isNaN(month) || isNaN(year)) {
     res.status(400).type('application/json');
     res.send(JSON.stringify({'success' : false, 'error' : !id ? 'ID is missing or is not a number' : 'Month and/or year is missing in query.'}));
   } else {
@@ -38,7 +38,7 @@ app.get('/api/listings/:id/compute', (req, res) => {
   var nights = Number.parseInt(req.query.nights) || 1;
   var guests = Number.parseInt(req.query.guests) || 1;
 
-  if (id !== NaN) {
+  if (isNaN(id)) {
     res.status(400).type('application/json');
     res.send(JSON.stringify({'success' : false, 'error' : 'ID is missing or is not a number'}));
   } else {

@@ -14,7 +14,8 @@ export default class CheckoutCalendar extends React.Component {
       firstWeekDay: 6,
       isChoosingCheckIn: true,
       checkinDay: null,
-      checkoutDay: null
+      checkoutDay: null,
+      reservedSet: new Set()
     };
 
     // Lookup tables to quickly get information
@@ -22,6 +23,32 @@ export default class CheckoutCalendar extends React.Component {
     this.daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     this.monthName = ['January', 'Feburary', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
+  }
+
+  // Access reserved API and return a set with all reserved data in the month in a Promise.
+  loadReserved(id, month, year) {
+    return fetch(`/api/listings/${id}/reserved?month=${month}&year=${year}`)
+    .then(response => response.json())
+    .then(reservations => {
+      // Fill reserved set with all dates for each range
+      var reservedSet = new Set();
+      for (let pair of reservations) {
+        for (let i = pair[0]; i <= pair[1]; i++) {
+          reservedSet.add(i);
+        }
+      }
+
+      return reservedSet;
+    });
+  }
+
+  componentDidMount() {
+    this.loadReserved(this.props.id, this.state.month, this.state.year)
+    .then(reservedSet => {
+      this.setState({
+        reservedSet
+      });
+    });
   }
 
   firstDayOfWeekFor(month, year) {
@@ -40,8 +67,12 @@ export default class CheckoutCalendar extends React.Component {
       month = month < 11 ? month + 1 : 0;
     }
 
-    this.setState({
-      month, year
+    // Update reservations
+    this.loadReserved(this.props.id, month, year)
+    .then(reservedSet => {
+      this.setState({
+        month, year, reservedSet
+      });
     });
   }
 
@@ -102,9 +133,12 @@ export default class CheckoutCalendar extends React.Component {
           currDate.setDate(day);
         }
 
+        // Determine the CSS class for the cell. This allows it to respond to hovering, show as selected, past today, or reserved 
         let css = currDate.getTime() < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
         let dayVal = day < 1 || day > lastDay ? null : day;
-        if (dayVal && currDate.getTime() > this.state.checkinDay && currDate.getTime() < this.state.checkoutDay) {
+        if (this.state.reservedSet.has(dayVal)) {
+          css += ' checkoutReserved';
+        } else if (dayVal && currDate.getTime() > this.state.checkinDay && currDate.getTime() < this.state.checkoutDay) {
           css += ' checkoutReserveRange';
         } else if (dayVal && currDate.getTime() === this.state.checkinDay || currDate.getTime() === this.state.checkoutDay) {
           css += ' checkoutReserveEnd';
