@@ -2,7 +2,30 @@ import React from 'react';
 
 const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
 
-export default class CheckoutCalendar extends React.Component {
+var CalendarHeader = props => (
+  <div className='row checkoutKeylinesTop'>
+    <div className='col-md-3'>
+      <button className='btn btn-sm btn-outline-primary' onClick={props.onBtnClick.bind(this, true)}>←</button>
+    </div>
+    <div className='col-md-6 checkoutCenterText'>
+      <strong>{`${props.monthName[props.month]} ${props.year}`}</strong>
+    </div>
+    <div className='col-md-3'>
+      <button className='btn btn-sm btn-outline-primary checkoutFloatRight' onClick={props.onBtnClick.bind(this, false)}>→</button>
+    </div>
+  </div>
+);
+
+var CalendarFooter = props => (
+  <div className='row checkoutKeylines'>
+    <div className='col-md-8'>{props.lastUpdated}</div>
+    <div className='col-md-4'>
+      <button className='btn btn-outline-primary checkoutFloatRight' onClick={props.onClear}>Clear</button>
+    </div>
+  </div>
+);
+
+export default class Calendar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -52,9 +75,7 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
 
-  firstDayOfWeekFor(month, year) {
-    return new Date(year, month).getDay();
-  }
+  // Listener methods
 
   onBtnClick(left) {
     let month = this.state.month;
@@ -75,17 +96,6 @@ export default class CheckoutCalendar extends React.Component {
         month, year, reservedSet
       });
     });
-  }
-
-  // Determine if a range contains a reserved day
-  // TODO: Refactor with bit vector to make it faster
-  isRangeBookable(start, end) {
-    for (let i = start; i <= end; i++) {
-      if (this.state.reservedSet.has(i)) {
-        return false;
-      }
-    }
-    return true;
   }
 
   // If neither check day has been set, set the check in date
@@ -121,11 +131,11 @@ export default class CheckoutCalendar extends React.Component {
       }
     }
   }
-  
+
   // If date is valid, save the current date being hovered over
   onCellEnter(month, year, event) {
     const day = Number.parseInt(event.target.textContent);
-    
+
     if (day) {
       this.setState({
         currHovered: new Date(year, month, day).getTime()
@@ -140,6 +150,23 @@ export default class CheckoutCalendar extends React.Component {
       checkoutDay: null,
       currHovered: null
     });
+  }
+
+  // Helper methods
+
+  firstDayOfWeekFor(month, year) {
+    return new Date(year, month).getDay();
+  }
+
+  // Determine if a range contains a reserved day
+  // TODO: Refactor with bit vector to make it faster
+  isRangeBookable(start, end) {
+    for (let i = start; i <= end; i++) {
+      if (this.state.reservedSet.has(i)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // Return an 2-D array, seven elements for each row that indicates the month day number for each week day.
@@ -173,7 +200,8 @@ export default class CheckoutCalendar extends React.Component {
         } else if (dayVal && currTime === this.state.checkinDay || currTime === this.state.checkoutDay) {
           css += ' checkoutReserveEnd';
         } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered 
-          && currTime >= this.state.checkinDay && currTime <= this.state.currHovered && this.isRangeBookable(new Date(this.state.checkinDay).getDate(), currDate.getDate())) {
+          && currTime >= this.state.checkinDay && currTime <= this.state.currHovered 
+          && this.isRangeBookable(new Date(this.state.checkinDay).getDate(), currDate.getDate())) {
           css += ' checkoutSelection';
         } else if (dayVal && currTime >= midnightTmw) {
           css += ' checkoutAvailable';
@@ -191,17 +219,7 @@ export default class CheckoutCalendar extends React.Component {
   render() {
     return (
       <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
-        <div className='row checkoutKeylinesTop'>
-          <div className='col-md-3'>
-            <button className='btn btn-sm btn-outline-primary' onClick={this.onBtnClick.bind(this, true)}>←</button>
-          </div>
-          <div className='col-md-6 checkoutCenterText'>
-            <strong>{`${this.monthName[this.state.month]} ${this.state.year}`}</strong>
-          </div>
-          <div className='col-md-3'>
-            <button className='btn btn-sm btn-outline-primary checkoutFloatRight' onClick={this.onBtnClick.bind(this, false)}>→</button>
-          </div>
-        </div>
+        <CalendarHeader onBtnClick={this.onBtnClick.bind(this)} monthName={this.monthName} month={this.state.month} year={this.state.year} />
 
         <div className='row'>
           { this.days.map(day => ( <div className='col checkoutWeekDay'>{day}</div> )) }
@@ -218,14 +236,7 @@ export default class CheckoutCalendar extends React.Component {
           ))
         }
 
-        <div className='row checkoutKeylines'>
-          <div className='col-md-8'>
-            Updated 3 days ago
-          </div>
-          <div className='col-md-4'>
-            <button className='btn btn-outline-primary checkoutFloatRight' onClick={this.onClear.bind(this)}>Clear</button>
-          </div>
-        </div>
+        <CalendarFooter lastUpdated={'Updated 3 days ago'} onClear={this.onClear.bind(this)} />
       </div>
     );
   }
