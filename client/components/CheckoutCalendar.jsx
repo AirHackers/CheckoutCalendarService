@@ -4,6 +4,7 @@ import Guests from './Guests';
 import Breakdown from './Breakdown';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
+const server = 'http://127.0.0.1:3004/';
 
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
@@ -30,7 +31,7 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   loadPrice(id, guests, days) {
-    fetch(`/api/listings/${id}/compute?guests=${guests}&days=${days}`)
+    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&days=${days}`)
     .then(response => response.json())
     .then(response => {
       this.setState({
@@ -38,6 +39,9 @@ export default class CheckoutCalendar extends React.Component {
         personPerNight: response.personPerNight,
         cleaning: response.cleaning
       });
+    })
+    .catch(err => {
+      console.error(err);
     });
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 
 const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
+const server = 'http://127.0.0.1:3004/';
 
 var CalendarHeader = props => (
   <div className='row checkoutKeylinesTop'>
@@ -51,7 +52,7 @@ export default class Calendar extends React.Component {
 
   // Access reserved API and return a set with all reserved data in the month in a Promise.
   loadReserved(id, month, year) {
-    return fetch(`/api/listings/${id}/reserved?month=${month}&year=${year}`)
+    return fetch(`${server}/api/listings/${id}/reserved?month=${month}&year=${year}`)
     .then(response => response.json())
     .then(reservations => {
       // Fill reserved set with all dates for each range
@@ -63,6 +64,9 @@ export default class Calendar extends React.Component {
       }
 
       return reservedSet;
+    })
+    .catch(err => {
+      console.error(err);
     });
   }
 
@@ -89,11 +93,15 @@ export default class Calendar extends React.Component {
       month = month < 11 ? month + 1 : 0;
     }
 
+    this.setState({
+      month, year
+    });
+
     // Update reservations
     this.loadReserved(this.props.id, month, year)
     .then(reservedSet => {
       this.setState({
-        month, year, reservedSet
+        reservedSet
       });
     });
   }
@@ -227,7 +235,7 @@ export default class Calendar extends React.Component {
 
         {/* Render each day by inserting one week at a time. Days before and after the month have empty cells */
           this.getCellInfo(this.state.month, this.state.year).map(week => (
-            <div className='row'>
+            <div className='row checkoutCalRow'>
               { /* if day is null, nothing gets rendered */
                 week.map(obj => ( <div className={obj.css} onClick={this.onCellClick.bind(this, this.state.month, this.state.year)}
                 onMouseEnter={this.onCellEnter.bind(this, this.state.month, this.state.year)} >{obj.day}</div> ))
@@ -241,3 +249,5 @@ export default class Calendar extends React.Component {
     );
   }
 }
+
+export {CalendarHeader, CalendarFooter};
