@@ -12,6 +12,7 @@ export default class CheckoutCalendar extends React.Component {
       year: 2018,
       daysInMonth: 31,
       firstWeekDay: 6,
+      isChoosingCheckIn: true,
       checkinDay: null,
       checkoutDay: null
     };
@@ -44,7 +45,7 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
 
-  // If neither check day has been set, set the checkin date
+  // If neither check day has been set, set the check in date
   // If checkIn has been set, set the checkout date
   onCellClick(month, year, event) {
     // Validate the date is correct, first by checking the event target text
@@ -54,9 +55,20 @@ export default class CheckoutCalendar extends React.Component {
       const clickDate = new Date(year, month, day);
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
 
-      if (!this.state.checkoutDay && clickDate.getTime() > midnightTmw) {
+      if (clickDate.getTime() > midnightTmw) {
+        // Determine whether to set this date as check out or check in
+        let isCheckIn = this.state.isChoosingCheckIn;
+        if (this.state.checkoutDay && this.state.checkoutDay <= clickDate.getTime()) {
+          isCheckIn = false;
+        }
+
+        if (this.state.checkinDay && this.state.checkinDay >= clickDate.getTime()) {
+          isCheckIn = true;
+        }
+
         this.setState({
-          [ this.state.checkinDay ? 'checkoutDay' : 'checkinDay']: clickDate.getTime() // State key depends on whether check in day is set
+          isChoosingCheckIn: !isCheckIn,
+          [ !isCheckIn ? 'checkoutDay' : 'checkinDay']: clickDate.getTime() // State key depends on whether check in day is set
         });
       }
     }
@@ -64,6 +76,7 @@ export default class CheckoutCalendar extends React.Component {
 
   onClear(event) {
     this.setState({
+      isChoosingCheckIn: true,
       checkinDay: null,
       checkoutDay: null
     });
@@ -91,8 +104,10 @@ export default class CheckoutCalendar extends React.Component {
 
         let css = currDate.getTime() < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
         let dayVal = day < 1 || day > lastDay ? null : day;
-        if (dayVal && currDate.getTime() === this.state.checkinDay || currDate.getTime() === this.state.checkoutDay) {
+        if (dayVal && currDate.getTime() > this.state.checkinDay && currDate.getTime() < this.state.checkoutDay) {
           css += ' checkoutReserveRange';
+        } else if (dayVal && currDate.getTime() === this.state.checkinDay || currDate.getTime() === this.state.checkoutDay) {
+          css += ' checkoutReserveEnd';
         } else if (dayVal && currDate.getTime() >= midnightTmw) {
           css += ' checkoutAvailable';
         }
