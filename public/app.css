@@ -41,6 +41,10 @@
   background-color: rgb(231, 231, 231);
 }
 
+.checkoutReserveRange {
+  background-color: rgb(0, 132, 137);
+}
+
 .checkoutPast {
   text-decoration: line-through;
 }

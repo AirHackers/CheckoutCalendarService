@@ -43,7 +43,25 @@ export default class CheckoutCalendar extends React.Component {
       month, year
     });
   }
-  
+
+  // If neither check day has been set, set the checkin date
+  // If checkIn has been set, set the checkout date
+  onCellClick(month, year, event) {
+    // Validate the date is correct, first by checking the event target text
+    const day = event.target.textContent;
+
+    if (day) {
+      const clickDate = new Date(year, month, day);
+      const midnightTmw = new Date().setHours(24, 0, 0, 0);
+
+      if (!this.state.checkoutDay && clickDate.getTime() > midnightTmw) {
+        this.setState({
+          [ this.state.checkinDay ? 'checkoutDay' : 'checkinDay']: clickDate.getTime() // State key depends on whether check in day is set
+        });
+      }
+    }
+  }
+
   onClear(event) {
     this.setState({
       checkinDay: null,
@@ -57,9 +75,9 @@ export default class CheckoutCalendar extends React.Component {
     let firstDay = this.firstDayOfWeekFor(month, year);
     let lastDay = this.daysInMonth[month];
     let day = 0 - firstDay + 1; // firstDay - 1 iterations before adding days
-    
+
     let currDate = new Date(year, month);
-    let midnightTmw = new Date().setHours(24,0,0,0);
+    let midnightTmw = new Date().setHours(24, 0, 0, 0);
 
     // Update the date for the day being inserted, then determine
     // if the date is in the past. Also check if six rows needed
@@ -73,7 +91,9 @@ export default class CheckoutCalendar extends React.Component {
 
         let css = currDate.getTime() < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
         let dayVal = day < 1 || day > lastDay ? null : day;
-        if (dayVal && currDate.getTime() >= midnightTmw) {
+        if (dayVal && currDate.getTime() === this.state.checkinDay || currDate.getTime() === this.state.checkoutDay) {
+          css += ' checkoutReserveRange';
+        } else if (dayVal && currDate.getTime() >= midnightTmw) {
           css += ' checkoutAvailable';
         }
 
@@ -82,7 +102,7 @@ export default class CheckoutCalendar extends React.Component {
       }
       result.push(week);
     }
-    
+
     return result;
   }
 
@@ -109,7 +129,7 @@ export default class CheckoutCalendar extends React.Component {
           this.getCellInfo(this.state.month, this.state.year).map(week => (
             <div className='row'>
               { /* if day is null, nothing gets rendered */
-                week.map(obj => ( <div className={obj.css}>{obj.day}</div> ))
+                week.map(obj => ( <div className={obj.css} onClick={this.onCellClick.bind(this, this.state.month, this.state.year)}>{obj.day}</div> ))
               }
             </div>
           ))

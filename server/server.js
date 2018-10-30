@@ -20,16 +20,16 @@ app.get('/api/listings/:id/reserved', (req, res) => {
   var month = Number.parseInt(req.query.month);
   var year = Number.parseInt(req.query.year);
   
-  if (!month || !year) {
+  if (id !== NaN || !month || !year) {
     res.status(400).type('application/json');
-    res.send('{"success" : false, "error" : "Month and/or year is missing in query."}');
+    res.send(JSON.stringify({'success' : false, 'error' : !id ? 'ID is missing or is not a number' : 'Month and/or year is missing in query.'}));
+  } else {
+    Models.getReservedDates(db, id, month, year)
+    .then(result => {
+      res.status(200).type('application/json');
+      res.send(JSON.stringify(result));
+    });
   }
-  
-  Models.getReservedDates(db, id, month, year)
-  .then(result => {
-    res.status(200).type('application/json');
-    res.send(JSON.stringify(result));
-  });
 });
 
 // Given inputs for number of nights, guests, return JSON for the rental cost
@@ -38,8 +38,13 @@ app.get('/api/listings/:id/compute', (req, res) => {
   var nights = Number.parseInt(req.query.nights) || 1;
   var guests = Number.parseInt(req.query.guests) || 1;
 
-  res.status(200).type('application/json');
-  res.send(JSON.stringify(Models.calcPrice(id, nights, guests)));
+  if (id !== NaN) {
+    res.status(400).type('application/json');
+    res.send(JSON.stringify({'success' : false, 'error' : 'ID is missing or is not a number'}));
+  } else {
+    res.status(200).type('application/json');
+    res.send(JSON.stringify(Models.calcPrice(id, nights, guests)));
+  }
 });
 
 // Save body to DB
