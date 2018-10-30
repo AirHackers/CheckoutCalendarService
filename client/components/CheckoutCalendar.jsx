@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Guests from './Guests.jsx';
-import Breakdown from './Breakdown.jsx';
+import Guests from './Guests';
+import Breakdown from './Breakdown';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
 

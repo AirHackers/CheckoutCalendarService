@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Calendar from './components/Calendar.jsx';
+import Calendar from './components/Calendar';
 
-ReactDOM.render( <Calendar small={true} />,
+ReactDOM.render(<Calendar small />,
 document.getElementById('app'));
