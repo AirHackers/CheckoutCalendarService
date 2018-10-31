@@ -21,3 +21,7 @@ To run a test environment of this service, first install packages with `npm inst
  * Testing frameworks:
    * Jest
    * Enzyme
+
+## Renders (Hover to see image title)
+![alt text](art/checkout_breakdown.png "Checkout and Breakdown")
+![alt text](art/checkout_calendar.png "Checkout and Calendar")
