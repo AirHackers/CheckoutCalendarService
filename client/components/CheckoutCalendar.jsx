@@ -1,7 +1,7 @@
 import React from 'react';
 import Popover from '@material-ui/core/Popover';
-import Calendar from './Calendar';
 
+import Calendar from './Calendar';
 import Guests from './Guests';
 import Breakdown from './Breakdown';
 
@@ -183,7 +183,7 @@ export default class CheckoutCalendar extends React.Component {
     var checkinStr = this.state.checkinDay ? new Date(this.state.checkinDay).toLocaleDateString() : 'Check in';
     var checkoutStr = this.state.checkoutDay ? new Date(this.state.checkoutDay).toLocaleDateString() : 'Check out';
     return (
-      <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className='card container'>
         <span className='checkoutKeylinesTop'>
         { this.state.personPerNight ?
           <span><strong>${this.state.personPerNight}</strong> per night</span> : <span>Loading...</span>

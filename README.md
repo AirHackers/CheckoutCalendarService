@@ -13,14 +13,19 @@ To run a test environment of this service, first install packages with `npm inst
 
 ## Libraries and Frameworks
  * Webpack 4
+   * babel-loader, css-loader, postcss-loader, sass-loader
  * Babel
  * express.js
  * React 16
- * Bootstrap 4
+ * Bootstrap 4 as a CSS module
  * MySQL database and npm driver
+ * material-ui for Popover UI component
  * Testing frameworks:
    * Jest
    * Enzyme
+
+## Important Notes:
+ * Bootstrap is loaded as a SCSS module. This requires the node-sass module, which requires installing VS Build Tools on Windows. I would prefer to just import compiled CSS but I could not get around an unexpected token error encountered during the build in `bootstrap.min.css`.
 
 ## Renders (Hover to see image title)
 ![alt text](art/checkout_breakdown.png "Checkout and Breakdown")
