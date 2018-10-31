@@ -17,6 +17,8 @@ export default class CheckoutCalendar extends React.Component {
     // TODO: Property data needs to be acquired from the homes database
     // TODO: Use react router to get the ID
     this.state = {
+      month: 9,
+      year: 2018,
       days: 1,
       price: null,
       personPerNight: null,
@@ -24,11 +26,13 @@ export default class CheckoutCalendar extends React.Component {
       guests: [1, 0, 0],
       prevTotalGuests: 1,
       limit: 10,
-      showGuests: false
+      showGuests: false,
+      isChoosingCheckIn: true,
     };
 
     // Add ref to allow changing of guest input, and detect if clicked outside
     this.guestRef = React.createRef();
+    this.calRef = React.createRef();
   }
 
   loadPrice(id, guests, days) {
@@ -65,6 +69,10 @@ export default class CheckoutCalendar extends React.Component {
       isChoosingCheckIn: left,
       anchorEl: event.currentTarget,
     });
+    
+    if (this.calRef.current) {
+      this.calRef.current.setCheckinState(this.state.isChoosingCheckIn);
+    }
   }
 
   // Called when clicked outside of the pop over.
@@ -72,6 +80,26 @@ export default class CheckoutCalendar extends React.Component {
     this.setState({
       anchorEl: null,
     });
+  }
+  
+  // Update the month and year and call Calendar.setReservedData
+  onCalBtnClick(left) {
+    let month = this.state.month;
+    let year = this.state.year;
+
+    if (left) {
+      year = month > 0 ? year : year - 1;
+      month = month > 0 ? month - 1 : 11;
+    } else {
+      year = month < 11 ? year : year + 1;
+      month = month < 11 ? month + 1 : 0;
+    }
+
+    this.setState({
+      month, year
+    });
+    
+    this.calRef.current.setReservedData(this.props.id, month, year);
   }
 
   leftBtnFor(idx) {
@@ -147,7 +175,8 @@ export default class CheckoutCalendar extends React.Component {
             vertical: 'top',
             horizontal: 'center',
           }} >
-          <Calendar small id={0} />
+          <Calendar small ref={this.calRef} id={this.props.id} month={this.state.month} year={this.state.year} 
+            btnClick={this.onCalBtnClick.bind(this)} initCheckin={this.state.isChoosingCheckIn} />
         </Popover>
 
         <label>Guests</label>

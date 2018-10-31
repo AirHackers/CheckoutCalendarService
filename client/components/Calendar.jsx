@@ -6,13 +6,13 @@ const server = 'http://127.0.0.1:3004';
 const CalendarHeader = props => (
   <div className='row checkoutKeylinesTop'>
     <div className='col-md-3'>
-      <button className='btn btn-sm btn-outline-primary' onClick={props.onBtnClick.bind(this, true)}>←</button>
+      <button className='btn btn-sm btn-outline-primary' onClick={props.btnClick.bind(this, true)}>←</button>
     </div>
     <div className='col-md-6 checkoutCenterText'>
       <strong>{`${props.monthName[props.month]} ${props.year}`}</strong>
     </div>
     <div className='col-md-3'>
-      <button className='btn btn-sm btn-outline-primary checkoutFloatRight' onClick={props.onBtnClick.bind(this, false)}>→</button>
+      <button className='btn btn-sm btn-outline-primary checkoutFloatRight' onClick={props.btnClick.bind(this, false)}>→</button>
     </div>
   </div>
 );
@@ -32,11 +32,9 @@ export default class Calendar extends React.Component {
 
     // Month and days are 0-indexed!
     this.state = {
-      month: 8,
-      year: 2018,
       daysInMonth: 31,
       firstWeekDay: 6,
-      isChoosingCheckIn: true,
+      isChoosingCheckIn: this.props.initCheckin,
       checkinDay: null,
       checkoutDay: null,
       currHovered: null,
@@ -70,41 +68,27 @@ export default class Calendar extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.loadReserved(this.props.id, this.state.month, this.state.year)
+  // Update reservations, called by parent component or when mounted
+  setReservedData(id, month, year) {
+    this.loadReserved(id, month, year)
     .then(reservedSet => {
       this.setState({
         reservedSet
       });
     });
+  }
+  
+  setCheckinState(isCheckInDate) {
+    this.setState({
+      isChoosingCheckIn: isCheckInDate 
+    });
+  }
+
+  componentDidMount() {
+    this.setReservedData(this.props.id, this.props.month, this.props.year);
   }
 
   // Listener methods
-
-  onBtnClick(left) {
-    let month = this.state.month;
-    let year = this.state.year;
-
-    if (left) {
-      year = month > 0 ? year : year - 1;
-      month = month > 0 ? month - 1 : 11;
-    } else {
-      year = month < 11 ? year : year + 1;
-      month = month < 11 ? month + 1 : 0;
-    }
-
-    this.setState({
-      month, year
-    });
-
-    // Update reservations
-    this.loadReserved(this.props.id, month, year)
-    .then(reservedSet => {
-      this.setState({
-        reservedSet
-      });
-    });
-  }
 
   // If neither check day has been set, set the check in date
   // If checkIn has been set, set the checkout date
@@ -227,18 +211,18 @@ export default class Calendar extends React.Component {
   render() {
     return (
       <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
-        <CalendarHeader onBtnClick={this.onBtnClick.bind(this)} monthName={this.monthName} month={this.state.month} year={this.state.year} />
+        <CalendarHeader btnClick={this.props.btnClick.bind(this)} monthName={this.monthName} month={this.props.month} year={this.props.year} />
 
         <div className='row'>
           { this.days.map(day => ( <div className='col checkoutWeekDay'>{day}</div> )) }
         </div>
 
         {/* Render each day by inserting one week at a time. Days before and after the month have empty cells */
-          this.getCellInfo(this.state.month, this.state.year).map(week => (
+          this.getCellInfo(this.props.month, this.props.year).map(week => (
             <div className='row checkoutCalRow'>
               { /* if day is null, nothing gets rendered */
-                week.map(obj => ( <div className={obj.css} onClick={this.onCellClick.bind(this, this.state.month, this.state.year)}
-                onMouseEnter={this.onCellEnter.bind(this, this.state.month, this.state.year)} >{obj.day}</div> ))
+                week.map(obj => (<div className={obj.css} onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
+                onMouseEnter={this.onCellEnter.bind(this, this.props.month, this.props.year)} >{obj.day}</div> ))
               }
             </div>
           ))
