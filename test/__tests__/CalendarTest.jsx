@@ -23,7 +23,7 @@ let onBtnClick = function(event) {
 describe('Calendar headeronent test suite', function() {
   it('should move to different months and year when a button is pressed for the header', function() {
     let header = mount(
-      <CalendarHeader onBtnClick={onBtnClick} monthName={monthName} month={month} year={year} />
+      <CalendarHeader btnClick={onBtnClick} monthName={monthName} month={month} year={year} />
     );
 
     // Find the right button, simulate presses
@@ -49,9 +49,9 @@ describe('Calendar headeronent test suite', function() {
   });
   
   it('should display the correct number of rows based on the month', function() {
-    // TODO: Doesn't take props yet, this will need to be refactored too.
     const calendar = mount(
-      <Calendar small />
+      <Calendar small id={0} month={8} year={2018} 
+        btnClick={onBtnClick} initCheckin={true} />
     );
     
     // Locate the right sided button by selecting with two classes, simulate clicks
@@ -61,9 +61,11 @@ describe('Calendar headeronent test suite', function() {
     let rows = calendar.find('.checkoutCalRow');
     expect(rows.length).toBe(6); // September 2018 has 6 rows in the calendar
     
+    // Click, update props
     rightBtn.simulate('click');
+    calendar.setProps({month, year});
     calendar.update();
-    
+
     rows = calendar.find('.checkoutCalRow');
     expect(rows.length).toBe(5); // October 2018 has 5 rows in the calendar
   });

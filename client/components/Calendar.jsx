@@ -213,14 +213,14 @@ export default class Calendar extends React.Component {
         <CalendarHeader btnClick={this.props.btnClick.bind(this)} monthName={this.monthName} month={this.props.month} year={this.props.year} />
 
         <div className='row'>
-          { this.days.map(day => ( <div className='col checkoutWeekDay'>{day}</div> )) }
+          { this.days.map((day, i) => ( <div key={i} className='col checkoutWeekDay'>{day}</div> )) }
         </div>
 
         {/* Render each day by inserting one week at a time. Days before and after the month have empty cells */
-          this.getCellInfo(this.props.month, this.props.year).map(week => (
-            <div className='row checkoutCalRow'>
+          this.getCellInfo(this.props.month, this.props.year).map((week, i) => (
+            <div key={i} className='row checkoutCalRow'>
               { /* if day is null, nothing gets rendered */
-                week.map(obj => (<div className={obj.css} onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
+                week.map((obj, j) => (<div key={i * DAY_COLS + j} className={obj.css} onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
                 onMouseEnter={this.onCellEnter.bind(this, this.props.month, this.props.year)} >{obj.day}</div> ))
               }
             </div>

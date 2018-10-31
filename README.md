@@ -3,7 +3,9 @@ This is the implementation for the Checkout and Calendar service for Wander-Lodg
 
 ## Setup Instructions
 
-To run a test environment of this service, first install packages with `npm install`, then open two terminal windows to run `npm start` and `node server/server.js` to build a bundle and to launch the server backend. Now you may go to localhost:3004 to check out the service, and the endpoints are available as well.
+To run a test environment of this service, first install packages with `npm install`, then open two terminal windows to run `npm start` and `node server/server.js` to build a bundle and to launch the server backend. Ensure the MySQL daemon is running with `mysqld --console`. Now you may go to localhost:3004 to check out the service, and the endpoints are available as well.
+
+Run `npx jest` to run all available test suites.
 
 ## Endpoint details
  * /api/listings/:id/reserved/ - Returns all reserved data ranges for which the selected rental is reserved, based on the variable ID path.
