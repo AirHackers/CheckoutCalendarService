@@ -1,7 +1,7 @@
 import React from 'react';
 
 const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
-const server = 'http://127.0.0.1:3004/';
+const server = 'http://127.0.0.1:3004';
 
 const CalendarHeader = props => (
   <div className='row checkoutKeylinesTop'>

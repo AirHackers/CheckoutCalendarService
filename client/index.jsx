@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Calendar from './components/Calendar';
+import CheckoutCalendar from './components/CheckoutCalendar';
 
-ReactDOM.render(<Calendar small id={0} />,
+ReactDOM.render(<CheckoutCalendar small id={0} />,
 document.getElementById('app'));

@@ -1,10 +1,12 @@
 import React from 'react';
+import Popover from '@material-ui/core/Popover';
+import Calendar from './Calendar';
 
 import Guests from './Guests';
 import Breakdown from './Breakdown';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
-const server = 'http://127.0.0.1:3004/';
+const server = 'http://127.0.0.1:3004';
 
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
@@ -15,7 +17,6 @@ export default class CheckoutCalendar extends React.Component {
     // TODO: Property data needs to be acquired from the homes database
     // TODO: Use react router to get the ID
     this.state = {
-      id: 0,
       days: 1,
       price: null,
       personPerNight: null,
@@ -52,10 +53,25 @@ export default class CheckoutCalendar extends React.Component {
 
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
+    this.loadPrice(this.props.id, this.getTotalGuests(), this.state.days);
     
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
+  }
+
+  // Called when the check in/out inputs are clicked, trigger pop over!
+  onInputClick(left, event) {
+    this.setState({
+      isChoosingCheckIn: left,
+      anchorEl: event.currentTarget,
+    });
+  }
+
+  // Called when clicked outside of the pop over.
+  handleClose() {
+    this.setState({
+      anchorEl: null,
+    });
   }
 
   leftBtnFor(idx) {
@@ -75,7 +91,7 @@ export default class CheckoutCalendar extends React.Component {
       this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
     }
   }
-  
+
   // Hide guest component if clicked outside of it and click not on guest text
   onOutsideClick(event) {
     const guestDiv = document.getElementById('guests');
@@ -85,11 +101,11 @@ export default class CheckoutCalendar extends React.Component {
       this.onToggleGuests();
     }
   }
-  
+
   // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
     if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
-      this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
+      this.loadPrice(this.props.id, this.getTotalGuests(), this.state.days);
     }
 
     this.setState({
@@ -111,12 +127,28 @@ export default class CheckoutCalendar extends React.Component {
         <label>Dates</label>
         <div className='row checkoutKeylines'>
           <div className='col-md-6'>
-            <input className='form-control' type='text' defaultValue='Check in' readOnly></input>
+            <input className='form-control' type='text' defaultValue='Check in' onClick={this.onInputClick.bind(this, true)} readOnly></input>
           </div>
           <div className='col-md-6'>
-            <input className='form-control' type='text' defaultValue='Check out' readOnly></input>
+            <input className='form-control' type='text' defaultValue='Check out' onClick={this.onInputClick.bind(this, false)} readOnly></input>
           </div>
         </div>
+
+        <Popover
+          id="simple-popper"
+          open={Boolean(this.state.anchorEl)}
+          anchorEl={this.state.anchorEl}
+          onClose={this.handleClose.bind(this)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: this.state.isChoosingCheckIn ? 'right' : 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }} >
+          <Calendar small id={0} />
+        </Popover>
 
         <label>Guests</label>
         <div className='row'>
