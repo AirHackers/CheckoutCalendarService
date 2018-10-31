@@ -5,8 +5,11 @@ import Calendar from './Calendar';
 import Guests from './Guests';
 import Breakdown from './Breakdown';
 
-const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
+const ADULTS = 0, CHILDREN = 1, INFANTS = 2, MILLI_SEC_IN_DAY = 86400000;
 const server = 'http://127.0.0.1:3004';
+
+// For material-ui, use typography v2
+window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
@@ -19,7 +22,7 @@ export default class CheckoutCalendar extends React.Component {
     this.state = {
       month: 9,
       year: 2018,
-      days: 1,
+      nights: 1,
       price: null,
       personPerNight: null,
       cleaning: null,
@@ -37,8 +40,10 @@ export default class CheckoutCalendar extends React.Component {
     this.calRef = React.createRef();
   }
 
-  loadPrice(id, guests, days) {
-    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&days=${days}`)
+  // Helper methods
+  
+  loadPrice(id, guests, nights) {
+    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&nights=${nights}`)
     .then(response => response.json())
     .then(response => {
       this.setState({
@@ -56,15 +61,22 @@ export default class CheckoutCalendar extends React.Component {
   getTotalGuests() {
     return this.state.guests[ADULTS] + this.state.guests[CHILDREN];
   }
+  
+  // Determine whether a text input should have a green border surrounding it (indicating current selection)
+  getClassesForInput(forCheckIn) {
+    return Boolean(this.state.anchorEl) && this.state.isChoosingCheckIn === forCheckIn ? 'form-control is-valid' : 'form-control';
+  }
 
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.props.id, this.getTotalGuests(), this.state.days);
+    this.loadPrice(this.props.id, this.getTotalGuests(), this.state.nights);
     
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
   }
 
+  // Listener methods
+  
   // Called when the check in/out inputs are clicked, trigger pop over!
   onInputClick(left, event) {
     this.setState({
@@ -171,13 +183,14 @@ export default class CheckoutCalendar extends React.Component {
         <label>Dates</label>
         <div className='row checkoutKeylines'>
           <div className='col-md-6'>
-            <input className='form-control' type='text' defaultValue='Check in' onClick={this.onInputClick.bind(this, true)} readOnly></input>
+            <input className={this.getClassesForInput(true)} type='text' defaultValue='Check in' onClick={this.onInputClick.bind(this, true)} readOnly></input>
           </div>
           <div className='col-md-6'>
-            <input className='form-control' type='text' defaultValue='Check out' onClick={this.onInputClick.bind(this, false)} readOnly></input>
+            <input className={this.getClassesForInput(false)} type='text' defaultValue='Check out' onClick={this.onInputClick.bind(this, false)} readOnly></input>
           </div>
         </div>
 
+        {/* The Popover allows customizing its position and whether it is open */}
         <Popover
           id="simple-popper"
           open={Boolean(this.state.anchorEl)}
