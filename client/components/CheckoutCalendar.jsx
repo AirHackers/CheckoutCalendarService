@@ -239,7 +239,7 @@ export default class CheckoutCalendar extends React.Component {
         }
 
         <div className='row'>
-          <button className='checkoutBtnMargin col btn btn-danger' type='button'>Book</button>
+          <button className='checkoutBtnMargin col btn btn-danger' type='button'>Request to Book</button>
         </div>
 
         <label className='checkoutCenterText'>You won’t be charged yet</label>
