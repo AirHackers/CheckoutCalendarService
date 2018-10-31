@@ -147,7 +147,7 @@ export default class CheckoutCalendar extends React.Component {
   // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
     if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
-      this.loadPrice(this.props.id, this.getTotalGuests(), this.state.days);
+      this.loadPrice(this.props.id, this.getTotalGuests(), this.state.nights);
     }
 
     this.setState({
@@ -156,8 +156,17 @@ export default class CheckoutCalendar extends React.Component {
     });
   }
   
+  // Date is changed, if check in and out dates exist, also update price and close popover
   onChangeDate(isCheckIn, timeStamp) {
+    let nights = null;
+    if (this.state.checkinDay && !isCheckIn) {
+      nights = (timeStamp - this.state.checkinDay) / MILLI_SEC_IN_DAY;
+      this.loadPrice(this.props.id, this.getTotalGuests(), nights);
+      this.handleClose();
+    }
+
     this.setState({
+      nights,
       isChoosingCheckIn: !isCheckIn,
       [isCheckIn ? 'checkinDay' : 'checkoutDay']: timeStamp // State key depends on whether check in day is set
     });
