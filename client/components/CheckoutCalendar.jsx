@@ -223,8 +223,8 @@ export default class CheckoutCalendar extends React.Component {
             leftBtn={this.leftBtnFor.bind(this)} rightBtn={this.rightBtnFor.bind(this)} close={this.onToggleGuests.bind(this)}/>
         }
 
-        { this.state.price &&
-          <Breakdown perPerson={this.state.personPerNight} nights={this.state.days} cleaning={this.state.cleaning} total={this.state.price} />
+        { this.state.checkinDay && this.state.checkoutDay &&
+          <Breakdown perPerson={this.state.personPerNight} nights={this.state.nights} cleaning={this.state.cleaning} total={this.state.price} />
         }
 
         <div className='row'>
