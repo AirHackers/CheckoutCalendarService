@@ -47,6 +47,11 @@ app.get('/api/listings/:id/compute', (req, res) => {
   }
 });
 
+// Handles HTML requests for a given ID, will be routed by React Router
+app.get('/listings/:id', (req, res) => {
+  res.sendFile(path.join(__dirname + '/../public/index.html'));
+});
+
 // Save body to DB
 app.post('/api/reserve', (req, res, next) => {
   Models.addReservation(db, req.body)

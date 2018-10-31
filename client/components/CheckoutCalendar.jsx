@@ -69,7 +69,7 @@ export default class CheckoutCalendar extends React.Component {
 
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.props.id, this.getTotalGuests(), this.state.nights);
+    this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
     
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
@@ -113,7 +113,7 @@ export default class CheckoutCalendar extends React.Component {
       month, year
     });
     
-    this.calRef.current.setReservedData(this.props.id, month, year);
+    this.calRef.current.setReservedData(this.props.match.params.id, month, year);
   }
 
   leftBtnFor(idx) {
@@ -147,7 +147,7 @@ export default class CheckoutCalendar extends React.Component {
   // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
     if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
-      this.loadPrice(this.props.id, this.getTotalGuests(), this.state.nights);
+      this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
     }
 
     this.setState({
@@ -161,7 +161,7 @@ export default class CheckoutCalendar extends React.Component {
     let nights = null;
     if (this.state.checkinDay && !isCheckIn) {
       nights = (timeStamp - this.state.checkinDay) / MILLI_SEC_IN_DAY;
-      this.loadPrice(this.props.id, this.getTotalGuests(), nights);
+      this.loadPrice(this.props.match.params.id, this.getTotalGuests(), nights);
       this.handleClose();
     }
 
@@ -215,7 +215,7 @@ export default class CheckoutCalendar extends React.Component {
             vertical: 'top',
             horizontal: 'center',
           }} >
-          <Calendar small ref={this.calRef} id={this.props.id} month={this.state.month} year={this.state.year} 
+          <Calendar small ref={this.calRef} id={this.props.match.params.id} month={this.state.month} year={this.state.year}
             btnClick={this.onCalBtnClick.bind(this)} initCheckin={this.state.isChoosingCheckIn}
             onChangeDate={this.onChangeDate.bind(this)} checkinDay={this.state.checkinDay} checkoutDay={this.state.checkoutDay}
             resetDates={this.onResetDates.bind(this)} />
