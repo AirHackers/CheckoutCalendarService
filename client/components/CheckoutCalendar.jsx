@@ -180,6 +180,8 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   render() {
+    var checkinStr = this.state.checkinDay ? new Date(this.state.checkinDay).toLocaleDateString() : 'Check in';
+    var checkoutStr = this.state.checkoutDay ? new Date(this.state.checkoutDay).toLocaleDateString() : 'Check out';
     return (
       <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
         <span className='checkoutKeylinesTop'>
@@ -192,10 +194,10 @@ export default class CheckoutCalendar extends React.Component {
         <label>Dates</label>
         <div className='row checkoutKeylines'>
           <div className='col-md-6'>
-            <input className={this.getClassesForInput(true)} type='text' defaultValue='Check in' onClick={this.onInputClick.bind(this, true)} readOnly></input>
+            <input className={this.getClassesForInput(true)} type='text' value={checkinStr} onClick={this.onInputClick.bind(this, true)} readOnly></input>
           </div>
           <div className='col-md-6'>
-            <input className={this.getClassesForInput(false)} type='text' defaultValue='Check out' onClick={this.onInputClick.bind(this, false)} readOnly></input>
+            <input className={this.getClassesForInput(false)} type='text' value={checkoutStr} onClick={this.onInputClick.bind(this, false)} readOnly></input>
           </div>
         </div>
 
