@@ -28,6 +28,8 @@ export default class CheckoutCalendar extends React.Component {
       limit: 10,
       showGuests: false,
       isChoosingCheckIn: true,
+      checkinDay: null,
+      checkoutDay: null,
     };
 
     // Add ref to allow changing of guest input, and detect if clicked outside
@@ -141,6 +143,20 @@ export default class CheckoutCalendar extends React.Component {
       showGuests: !this.state.showGuests
     });
   }
+  
+  onChangeDate(isCheckIn, timeStamp) {
+    this.setState({
+      isChoosingCheckIn: !isCheckIn,
+      [isCheckIn ? 'checkinDay' : 'checkoutDay']: timeStamp // State key depends on whether check in day is set
+    });
+  }
+  
+  onResetDates() {
+    this.setState({
+      checkinDay: null,
+      checkoutDay: null
+    });
+  }
 
   render() {
     return (
@@ -176,7 +192,9 @@ export default class CheckoutCalendar extends React.Component {
             horizontal: 'center',
           }} >
           <Calendar small ref={this.calRef} id={this.props.id} month={this.state.month} year={this.state.year} 
-            btnClick={this.onCalBtnClick.bind(this)} initCheckin={this.state.isChoosingCheckIn} />
+            btnClick={this.onCalBtnClick.bind(this)} initCheckin={this.state.isChoosingCheckIn}
+            onChangeDate={this.onChangeDate.bind(this)} checkinDay={this.state.checkinDay} checkoutDay={this.state.checkoutDay}
+            resetDates={this.onResetDates.bind(this)} />
         </Popover>
 
         <label>Guests</label>

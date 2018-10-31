@@ -35,8 +35,6 @@ export default class Calendar extends React.Component {
       daysInMonth: 31,
       firstWeekDay: 6,
       isChoosingCheckIn: this.props.initCheckin,
-      checkinDay: null,
-      checkoutDay: null,
       currHovered: null,
       reservedSet: new Set()
     };
@@ -101,25 +99,26 @@ export default class Calendar extends React.Component {
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
       
       // Don't highlight a date if not bookable
-      if (!this.isRangeBookable(new Date(this.state.checkinDay).getDate(), clickDate.getDate())) {
+      if (!this.isRangeBookable(new Date(this.props.checkinDay).getDate(), clickDate.getDate())) {
         return;
       }
 
       if (clickDate.getTime() > midnightTmw) {
         // Determine whether to set this date as check out or check in
         let isCheckIn = this.state.isChoosingCheckIn;
-        if (this.state.checkoutDay && this.state.checkoutDay <= clickDate.getTime()) {
+        if (this.props.checkoutDay && this.props.checkoutDay <= clickDate.getTime()) {
           isCheckIn = false;
         }
 
-        if (this.state.checkinDay && this.state.checkinDay >= clickDate.getTime()) {
+        if (this.props.checkinDay && this.props.checkinDay >= clickDate.getTime()) {
           isCheckIn = true;
         }
 
         this.setState({
           isChoosingCheckIn: !isCheckIn,
-          [ !isCheckIn ? 'checkoutDay' : 'checkinDay']: clickDate.getTime() // State key depends on whether check in day is set
         });
+        
+        this.props.onChangeDate(isCheckIn, clickDate.getTime());
       }
     }
   }
@@ -138,10 +137,10 @@ export default class Calendar extends React.Component {
   onClear(event) {
     this.setState({
       isChoosingCheckIn: true,
-      checkinDay: null,
-      checkoutDay: null,
       currHovered: null
     });
+    
+    this.props.resetDates();
   }
 
   // Helper methods
@@ -187,13 +186,13 @@ export default class Calendar extends React.Component {
         let dayVal = day < 1 || day > lastDay ? null : day;
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
-        } else if (dayVal && currTime > this.state.checkinDay && currTime < this.state.checkoutDay) {
+        } else if (dayVal && currTime > this.props.checkinDay && currTime < this.props.checkoutDay) {
           css += ' checkoutReserveRange';
-        } else if (dayVal && currTime === this.state.checkinDay || currTime === this.state.checkoutDay) {
+        } else if (dayVal && currTime === this.props.checkinDay || currTime === this.props.checkoutDay) {
           css += ' checkoutReserveEnd';
         } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered 
-          && currTime >= this.state.checkinDay && currTime <= this.state.currHovered 
-          && this.isRangeBookable(new Date(this.state.checkinDay).getDate(), currDate.getDate())) {
+          && currTime >= this.props.checkinDay && currTime <= this.state.currHovered 
+          && this.isRangeBookable(new Date(this.props.checkinDay).getDate(), currDate.getDate())) {
           css += ' checkoutSelection';
         } else if (dayVal && currTime >= midnightTmw) {
           css += ' checkoutAvailable';
