@@ -1,9 +1,10 @@
 import React from 'react';
 
-import Guests from './Guests.jsx';
-import Breakdown from './Breakdown.jsx';
+import Guests from './Guests';
+import Breakdown from './Breakdown';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2;
+const server = 'http://127.0.0.1:3004/';
 
 // Checkout and calendar widget, is designed so the checkout widget
 // may influence the state of the calendar widget.
@@ -12,7 +13,9 @@ export default class CheckoutCalendar extends React.Component {
     super(props);
 
     // TODO: Property data needs to be acquired from the homes database
+    // TODO: Use react router to get the ID
     this.state = {
+      id: 0,
       days: 1,
       price: null,
       personPerNight: null,
@@ -27,8 +30,8 @@ export default class CheckoutCalendar extends React.Component {
     this.guestRef = React.createRef();
   }
 
-  loadPrice(guests, days) {
-    fetch(`/api/compute?guests=${guests}&days=${days}`)
+  loadPrice(id, guests, days) {
+    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&days=${days}`)
     .then(response => response.json())
     .then(response => {
       this.setState({
@@ -36,6 +39,9 @@ export default class CheckoutCalendar extends React.Component {
         personPerNight: response.personPerNight,
         cleaning: response.cleaning
       });
+    })
+    .catch(err => {
+      console.error(err);
     });
   }
 
@@ -46,14 +52,14 @@ export default class CheckoutCalendar extends React.Component {
 
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
-    this.loadPrice(this.getTotalGuests(), this.state.days);
+    this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
     
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
   }
 
   leftBtnFor(idx) {
-    var guests = this.state.guests;
+    let guests = this.state.guests;
     if (guests[idx] !== 0) {
       guests[idx]--;
       this.setState({guests});
@@ -62,7 +68,7 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   rightBtnFor(idx) {
-    var guests = this.state.guests;
+    let guests = this.state.guests;
     if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
       guests[idx]++;
       this.setState({guests});
@@ -83,7 +89,7 @@ export default class CheckoutCalendar extends React.Component {
   // Listener for all 3 toggling methods. If closing, update the price if guest number changes.
   onToggleGuests() {
     if (this.state.showGuests && this.state.prevTotalGuests !== this.getTotalGuests()) {
-      this.loadPrice(this.getTotalGuests(), this.state.days);
+      this.loadPrice(this.state.id, this.getTotalGuests(), this.state.days);
     }
 
     this.setState({
@@ -94,7 +100,7 @@ export default class CheckoutCalendar extends React.Component {
 
   render() {
     return (
-      <div className={this.props.small ? 'card container checkoutKeylinesTop' : 'card container'}>
+      <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
         <span className='checkoutKeylinesTop'>
         { this.state.personPerNight ?
           <span><strong>${this.state.personPerNight}</strong> per night</span> : <span>Loading...</span>
@@ -105,10 +111,10 @@ export default class CheckoutCalendar extends React.Component {
         <label>Dates</label>
         <div className='row checkoutKeylines'>
           <div className='col-md-6'>
-            <input className='form-control' type='text' placeholder='Check in'></input>
+            <input className='form-control' type='text' defaultValue='Check in' readOnly></input>
           </div>
           <div className='col-md-6'>
-            <input className='form-control' type='text' placeholder='Check out'></input>
+            <input className='form-control' type='text' defaultValue='Check out' readOnly></input>
           </div>
         </div>
 

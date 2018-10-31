@@ -25,3 +25,39 @@
 .checkoutRightText {
   text-align: right;
 }
+
+.checkoutWeekDay {
+  text-align: center;
+  width: 41px;
+}
+
+.checkoutCell {
+  text-align: center;
+  width: 41px;
+  height: 41px;
+}
+
+.checkoutAvailable:hover {
+  background-color: rgb(231, 231, 231);
+}
+
+.checkoutReserveRange {
+  background-color: rgb(102, 226, 218);
+}
+
+.checkoutReserveEnd {
+  background-color: rgb(0, 132, 137);
+}
+
+.checkoutSelection {
+  background-color: rgb(178, 241, 236);
+}
+
+.checkoutPast, .checkoutReserved {
+  text-decoration: line-through;
+}
+
+/* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
+input[type="text"][readOnly] {
+  background-color: #fff;
+}
