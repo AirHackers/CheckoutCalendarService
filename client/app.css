@@ -11,10 +11,10 @@
 }
 
 .checkoutCenterText {
-  text-align: center;    
+  text-align: center;
 }
 
-.checkoutMaxWidth {
+#checkoutMaxWidth {
   max-width: 400px;
 }
 
@@ -28,12 +28,12 @@
 
 .checkoutWeekDay {
   text-align: center;
-  width: 41px;
+  /* width: 41px; */
 }
 
 .checkoutCell {
   text-align: center;
-  width: 41px;
+  /* width: 41px; */
   height: 41px;
 }
 

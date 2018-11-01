@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Subcomponent for the buttons and the quantity for a given row
-var GuestChooser = props => {
+const GuestChooser = props => {
   const firstClass = props.quantity === 0 && !props.infant ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
   const secondClass = props.quantity === props.limit || props.total >= props.limit && !props.infant ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
   
@@ -21,7 +21,7 @@ var GuestChooser = props => {
 };
 
 // Subcomponent for the guest type and quantity
-var GuestRow = props => (
+const GuestRow = props => (
   <div className={props.top ? 'row checkoutKeylinesTop' : 'row'}>
     <div className='col'>
       {props.input}

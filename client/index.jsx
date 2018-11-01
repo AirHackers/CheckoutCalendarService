@@ -1,7 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Route, BrowserRouter } from 'react-router-dom';
 
-import Calendar from './components/Calendar';
+import CheckoutCalendar from './components/CheckoutCalendar';
 
-ReactDOM.render(<Calendar small id={0} />,
-document.getElementById('app'));
+import './scss/app.scss';
+import styles from './app.css';
+
+ReactDOM.render((
+  <BrowserRouter>
+    <Route path='/listings/:id' render={(props) => <CheckoutCalendar {...props} small />} />
+  </BrowserRouter>
+), document.getElementById('app'));
