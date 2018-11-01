@@ -6,13 +6,13 @@ import Guests from '../../client/components/Guests.jsx';
 // Test variables used as dependency injection for the Guest props,
 // the component does not need to know or care what is passed into it.
 
-var quantity = 0;
+let quantity = 0;
 
-var left = function() {
+const left = function() {
   quantity--;
 };
 
-var right = function() {
+const right = function() {
   quantity++;
 };
 
@@ -23,7 +23,7 @@ beforeEach(() => {
 describe('Guests component test suite', function() {
   it('should be selectable by class "guests"', function() {
     // Shallow will render the component but not its children components.
-    var shallowComp = shallow(
+    const shallowComp = shallow(
       <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
     );
@@ -31,7 +31,7 @@ describe('Guests component test suite', function() {
   });
 
   it('should mount in a full DOM and have seven buttons', function() {
-    var comp = mount(
+    const comp = mount(
       <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
     );
@@ -42,14 +42,14 @@ describe('Guests component test suite', function() {
   });
   
   it('should gray out buttons when limit is reached', function() {
-    var comp = mount(
+    let comp = mount(
       <Guests adults={0} children={0} infants={0} limit={10} total={0} 
         leftBtn={left} rightBtn={right} />
     );
     
     // Find the plus button in the adults row, and call its onClick function
-    var adultPlusBtn = comp.find('.btn-outline-primary').at(1);
-    for (var i = 0; i < 10; i++) {
+    let adultPlusBtn = comp.find('.btn-outline-primary').at(1);
+    for (let i = 0; i < 10; i++) {
       adultPlusBtn.simulate('click');
       
       // Because setState isn't being called here, we need to update the props ourselves like setState.
@@ -63,8 +63,8 @@ describe('Guests component test suite', function() {
   });
 
   it('should render to static HTML', function() {
-    var rowString = 'Adults';
-    var rendered = render(
+    const rowString = 'Adults';
+    const rendered = render(
       <Guests adults={0} children={0} infants={0} limit={10} total={5} 
         leftBtn={left} rightBtn={right} />
     );

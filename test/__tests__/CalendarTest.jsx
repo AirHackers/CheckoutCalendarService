@@ -5,7 +5,7 @@ import fetch from 'isomorphic-fetch';
 import Calendar from '../../client/components/Calendar.jsx';
 import {CalendarHeader, CalendarFooter} from '../../client/components/Calendar.jsx';
 
-// Define variables and functions here to be dependency injected to each headeronent as props
+// Define variables and functions here to be dependency injected to each component as props
 let monthName = ['January', 'Feburary', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
 let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -96,7 +96,7 @@ describe('Calendar component test suite', function() {
   });
 
   it('should display dashes on all cells before today', function() {
-    var thisMonth = new Date().getMonth();
+    const thisMonth = new Date().getMonth();
     
     const calendar = mount(
       <Calendar small id={0} month={thisMonth - 2} year={2018} 

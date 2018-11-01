@@ -19,7 +19,7 @@ describe('Checkout component test suite', function() {
 
     comp.update();
     expect(comp.state('anchorEl')).toBeDefined();
-    debugger;
+
     // Because the popover is not a child of the CheckoutCalendar component, call the handleClose function.
     comp.instance().handleClose();
 
