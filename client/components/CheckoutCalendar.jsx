@@ -18,7 +18,6 @@ export default class CheckoutCalendar extends React.Component {
     super(props);
 
     // TODO: Property data needs to be acquired from the homes database
-    // TODO: Use react router to get the ID
     this.state = {
       month: 9,
       year: 2018,
@@ -113,7 +112,9 @@ export default class CheckoutCalendar extends React.Component {
       month, year
     });
     
-    this.calRef.current.setReservedData(this.props.match.params.id, month, year);
+    if (this.calRef.current) {
+      this.calRef.current.setReservedData(this.props.match.params.id, month, year);
+    }
   }
 
   leftBtnFor(idx) {

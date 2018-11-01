@@ -128,8 +128,8 @@ describe('Calendar component test suite', function() {
 
     const firstDate = new Date(checkinDay).getDate();
     const secondDate = new Date(checkoutDay).getDate();
-    expect(firstDate).toBe(10);
-    expect(secondDate).toBe(16);
+    expect(firstDate).toBe(11);
+    expect(secondDate).toBe(17);
     expect(secondDate - firstDate).toBe(expectedNights);
     
     // Reset booking
