@@ -48,9 +48,9 @@ describe('Guests component test suite', function() {
     );
     
     // Find the plus button in the adults row, and call its onClick function
-    var adultPlusBtn = comp.find('.btn-outline-primary').getElements()[1];
+    var adultPlusBtn = comp.find('.btn-outline-primary').at(1);
     for (var i = 0; i < 10; i++) {
-      adultPlusBtn.props.onClick();
+      adultPlusBtn.simulate('click');
       
       // Because setState isn't being called here, we need to update the props ourselves like setState.
       comp.setProps({adults: quantity, total: quantity});

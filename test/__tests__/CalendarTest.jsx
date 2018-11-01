@@ -1,4 +1,4 @@
-import { shallow, mount, render } from 'enzyme';
+import {mount} from 'enzyme';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 
@@ -45,7 +45,7 @@ let onReset = function() {
   checkoutDay = null;
 };
 
-describe('Calendar headeronent test suite', function() {
+describe('Calendar component test suite', function() {
   it('should move to different months and year when a button is pressed for the header', function() {
     let header = mount(
       <CalendarHeader btnClick={onBtnClick} monthName={monthName} month={month} year={year} />
