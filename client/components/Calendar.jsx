@@ -182,8 +182,9 @@ export default class Calendar extends React.Component {
 
         // Determine the CSS class for the cell. This allows it to respond to hovering, show as selected, past today, or reserved
         let currTime = currDate.getTime();
-        let css = currTime < midnightTmw ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
         let dayVal = day < 1 || day > lastDay ? null : day;
+        let css = currTime < midnightTmw && dayVal ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
+        
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
         } else if (dayVal && currTime > this.props.checkinDay && currTime < this.props.checkoutDay) {
