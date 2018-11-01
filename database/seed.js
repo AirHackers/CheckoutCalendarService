@@ -1,11 +1,12 @@
 const mysql = require('mysql');
-const seedData = require('./fixtures.js');
 const Promise = require('bluebird');
+const seedData = require('./fixtures.js');
+
 const database = 'reservations';
 
 const connection = mysql.createConnection({
   user: 'root',
-  password: ''
+  password: '',
 });
 
 // Use promisification on the MySQL database connection
