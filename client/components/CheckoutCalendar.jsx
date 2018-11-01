@@ -180,8 +180,8 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   render() {
-    var checkinStr = this.state.checkinDay ? new Date(this.state.checkinDay).toLocaleDateString() : 'Check in';
-    var checkoutStr = this.state.checkoutDay ? new Date(this.state.checkoutDay).toLocaleDateString() : 'Check out';
+    const checkinStr = this.state.checkinDay ? new Date(this.state.checkinDay).toLocaleDateString() : 'Check in';
+    const checkoutStr = this.state.checkoutDay ? new Date(this.state.checkoutDay).toLocaleDateString() : 'Check out';
     return (
       <div id={this.props.small ? 'checkoutMaxWidth' : null} className='card container'>
         <span className='checkoutKeylinesTop'>

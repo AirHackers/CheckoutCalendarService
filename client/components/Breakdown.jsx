@@ -2,7 +2,7 @@ import React from 'react';
 
 // Use Bootstrap gridding to position elements in a table-like manner.
 // Border classes allow the top and bottom borders in the lists to be omitted
-var Breakdown = props => (
+const Breakdown = props => (
   <ul className='list-group list-group-flush'>
     <li className='list-group-item border-top-0'>
       <div className='row'>
