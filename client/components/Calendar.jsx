@@ -1,42 +1,82 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const WEEK_ROWS = 5, SIX_WEEK_ROWS = 6, DAY_COLS = 7, CELL_THRESHOLD = 35;
+const WEEK_ROWS = 5; const SIX_WEEK_ROWS = 6; const DAY_COLS = 7; const
+  CELL_THRESHOLD = 35;
 const server = 'http://127.0.0.1:3004';
 
-const CalendarHeader = props => (
-  <div className='row checkoutKeylinesTop'>
-    <div className='col-md-3'>
-      <button className='btn btn-sm btn-outline-primary' onClick={props.btnClick.bind(this, true)}>←</button>
+const CalendarHeader = ({
+  btnClick, monthName, month, year,
+}) => (
+  <div className="row checkoutKeylinesTop">
+    <div className="col-md-3">
+      <button type="button" className="btn btn-sm btn-outline-primary" onClick={btnClick.bind(this, true)}>←</button>
     </div>
-    <div className='col-md-6 checkoutCenterText'>
-      <strong>{`${props.monthName[props.month]} ${props.year}`}</strong>
+    <div className="col-md-6 checkoutCenterText">
+      <strong>{`${monthName[month]} ${year}`}</strong>
     </div>
-    <div className='col-md-3'>
-      <button className='btn btn-sm btn-outline-primary checkoutFloatRight' onClick={props.btnClick.bind(this, false)}>→</button>
+    <div className="col-md-3">
+      <button type="button" className="btn btn-sm btn-outline-primary checkoutFloatRight" onClick={btnClick.bind(this, false)}>→</button>
     </div>
   </div>
 );
 
-const CalendarFooter = props => (
-  <div className='row checkoutKeylines'>
-    <div className='col-md-8'>{props.lastUpdated}</div>
-    <div className='col-md-4'>
-      <button className='btn btn-outline-primary checkoutFloatRight' onClick={props.onClear}>Clear</button>
+CalendarHeader.propTypes = {
+  btnClick: PropTypes.func.isRequired,
+  monthName: PropTypes.arrayOf.isRequired,
+  month: PropTypes.number.isRequired,
+  year: PropTypes.number.isRequired,
+};
+
+const CalendarFooter = ({
+  lastUpdated, onClear,
+}) => (
+  <div className="row checkoutKeylines">
+    <div className="col-md-8">{lastUpdated}</div>
+    <div className="col-md-4">
+      <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={onClear}>Clear</button>
     </div>
   </div>
 );
+
+CalendarFooter.propTypes = {
+  lastUpdated: PropTypes.string.isRequired,
+  onClear: PropTypes.func.isRequired,
+};
 
 export default class Calendar extends React.Component {
+  // Access reserved API and return a set with all reserved data in the month in a Promise.
+  static loadReserved(id, month, year) {
+    return fetch(`${server}/api/listings/${id}/reserved?month=${month}&year=${year}`)
+      .then(response => response.json())
+      .then((reservations) => {
+      // Fill reserved set with all dates for each range
+        const reservedSet = new Set();
+        reservations.forEach((pair) => {
+          for (let i = pair[0]; i <= pair[1]; i += 1) {
+            reservedSet.add(i);
+          }
+        });
+
+        return reservedSet;
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  static firstDayOfWeekFor(month, year) {
+    return new Date(year, month).getDay();
+  }
+
   constructor(props) {
     super(props);
 
     // Month and days are 0-indexed!
     this.state = {
-      daysInMonth: 31,
-      firstWeekDay: 6,
-      isChoosingCheckIn: this.props.initCheckin,
+      isChoosingCheckIn: props.initCheckin,
       currHovered: null,
-      reservedSet: new Set()
+      reservedSet: new Set(),
     };
 
     // Lookup tables to quickly get information
@@ -44,42 +84,6 @@ export default class Calendar extends React.Component {
     this.daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     this.monthName = ['January', 'Feburary', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
-  }
-
-  // Access reserved API and return a set with all reserved data in the month in a Promise.
-  loadReserved(id, month, year) {
-    return fetch(`${server}/api/listings/${id}/reserved?month=${month}&year=${year}`)
-    .then(response => response.json())
-    .then(reservations => {
-      // Fill reserved set with all dates for each range
-      let reservedSet = new Set();
-      for (let pair of reservations) {
-        for (let i = pair[0]; i <= pair[1]; i++) {
-          reservedSet.add(i);
-        }
-      }
-
-      return reservedSet;
-    })
-    .catch(err => {
-      console.error(err);
-    });
-  }
-
-  // Update reservations, called by parent component or when mounted
-  setReservedData(id, month, year) {
-    this.loadReserved(id, month, year)
-    .then(reservedSet => {
-      this.setState({
-        reservedSet
-      });
-    });
-  }
-  
-  setCheckinState(isCheckInDate) {
-    this.setState({
-      isChoosingCheckIn: isCheckInDate 
-    });
   }
 
   componentDidMount() {
@@ -92,12 +96,12 @@ export default class Calendar extends React.Component {
   // If checkIn has been set, set the checkout date
   onCellClick(month, year, event) {
     // Validate the date is correct, first by checking the event target text
-    const day = Number.parseInt(event.target.textContent);
+    const day = Number.parseInt(event.target.textContent, 10);
 
     if (day && !this.state.reservedSet.has(day)) {
       const clickDate = new Date(year, month, day);
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
-      
+
       // Don't highlight a date if not bookable
       if (!this.isRangeBookable(new Date(this.props.checkinDay).getDate(), clickDate.getDate())) {
         return;
@@ -117,7 +121,7 @@ export default class Calendar extends React.Component {
         this.setState({
           isChoosingCheckIn: !isCheckIn,
         });
-        
+
         this.props.onChangeDate(isCheckIn, clickDate.getTime());
       }
     }
@@ -125,81 +129,86 @@ export default class Calendar extends React.Component {
 
   // If date is valid, save the current date being hovered over
   onCellEnter(month, year, event) {
-    const day = Number.parseInt(event.target.textContent);
+    const day = Number.parseInt(event.target.textContent, 10);
 
     if (day) {
       this.setState({
-        currHovered: new Date(year, month, day).getTime()
+        currHovered: new Date(year, month, day).getTime(),
       });
     }
   }
 
-  onClear(event) {
+  onClear() {
     this.setState({
       isChoosingCheckIn: true,
-      currHovered: null
+      currHovered: null,
     });
-    
+
     this.props.resetDates();
+  }
+
+  setCheckinState(isCheckInDate) {
+    this.setState({
+      isChoosingCheckIn: isCheckInDate,
+    });
   }
 
   // Helper methods
 
-  firstDayOfWeekFor(month, year) {
-    return new Date(year, month).getDay();
+  // Update reservations, called by parent component or when mounted
+  setReservedData(id, month, year) {
+    Calendar.loadReserved(id, month, year)
+      .then((reservedSet) => {
+        this.setState({
+          reservedSet,
+        });
+      });
   }
 
-  // Determine if a range contains a reserved day
-  // TODO: Refactor with bit vector to make it faster
-  isRangeBookable(start, end) {
-    for (let i = start; i <= end; i++) {
-      if (this.state.reservedSet.has(i)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // Return an 2-D array, seven elements for each row that indicates the month day number for each week day.
+  // Return an 2-D array, seven elements for each row that
+  // indicates the month day number for each week day.
   getCellInfo(month, year) {
-    let result = [];
-    let firstDay = this.firstDayOfWeekFor(month, year);
-    let lastDay = this.daysInMonth[month];
+    const result = [];
+    const firstDay = Calendar.firstDayOfWeekFor(month, year);
+    const lastDay = this.daysInMonth[month];
     let day = 0 - firstDay + 1; // firstDay - 1 iterations before adding days
 
-    let currDate = new Date(year, month);
-    let midnightTmw = new Date().setHours(24, 0, 0, 0);
+    const currDate = new Date(year, month);
+    const midnightTmw = new Date().setHours(24, 0, 0, 0);
 
     // Update the date for the day being inserted, then determine
     // if the date is in the past. Also check if six rows needed
-    let rows = firstDay + lastDay > CELL_THRESHOLD ? SIX_WEEK_ROWS : WEEK_ROWS;
+    const rows = firstDay + lastDay > CELL_THRESHOLD ? SIX_WEEK_ROWS : WEEK_ROWS;
     for (let i = 0; i < rows; i += 1) {
-      let week = [];
+      const week = [];
       for (let j = 0; j < DAY_COLS; j += 1) {
         if (day >= 1 && day <= lastDay) {
           currDate.setDate(day);
         }
 
-        // Determine the CSS class for the cell. This allows it to respond to hovering, show as selected, past today, or reserved
-        let currTime = currDate.getTime();
-        let dayVal = day < 1 || day > lastDay ? null : day;
+        // Determine the CSS class for the cell. This allows it to respond to hovering,
+        // show as selected, past today, or reserved
+        const currTime = currDate.getTime();
+        const dayVal = day < 1 || day > lastDay ? null : day;
         let css = currTime < midnightTmw && dayVal ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
-        
+
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
-        } else if (dayVal && currTime > this.props.checkinDay && currTime < this.props.checkoutDay) {
+        } else if (dayVal && currTime > this.props.checkinDay
+          && currTime < this.props.checkoutDay) {
           css += ' checkoutReserveRange';
-        } else if (dayVal && currTime === this.props.checkinDay || currTime === this.props.checkoutDay) {
+        } else if ((dayVal && currTime === this.props.checkinDay)
+          || currTime === this.props.checkoutDay) {
           css += ' checkoutReserveEnd';
-        } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered 
-          && currTime >= this.props.checkinDay && currTime <= this.state.currHovered 
+        } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered
+          && currTime >= this.props.checkinDay && currTime <= this.state.currHovered
           && this.isRangeBookable(new Date(this.props.checkinDay).getDate(), currDate.getDate())) {
           css += ' checkoutSelection';
         } else if (dayVal && currTime >= midnightTmw) {
           css += ' checkoutAvailable';
         }
 
-        week.push({day: dayVal, css});
+        week.push({ day: dayVal, css });
         day += 1;
       }
       result.push(week);
@@ -208,30 +217,76 @@ export default class Calendar extends React.Component {
     return result;
   }
 
+  // Determine if a range contains a reserved day
+  // TODO: Refactor with bit vector to make it faster
+  isRangeBookable(start, end) {
+    for (let i = start; i <= end; i += 1) {
+      if (this.state.reservedSet.has(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   render() {
     return (
       <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
-        <CalendarHeader btnClick={this.props.btnClick.bind(this)} monthName={this.monthName} month={this.props.month} year={this.props.year} />
+        <CalendarHeader
+          btnClick={this.props.btnClick}
+          monthName={this.monthName}
+          month={this.props.month}
+          year={this.props.year}
+        />
 
-        <div className='row'>
-          { this.days.map((day, i) => ( <div key={i} className='col checkoutWeekDay'>{day}</div> )) }
+        <div className="row">
+          { this.days.map(day => (<div className="col checkoutWeekDay">{day}</div>)) }
         </div>
 
-        {/* Render each day by inserting one week at a time. Days before and after the month have empty cells */
-          this.getCellInfo(this.props.month, this.props.year).map((week, i) => (
-            <div key={i} className='row checkoutCalRow'>
+        {/* Render each day by inserting one week at a time.
+          Days before and after the month have empty cells */
+          this.getCellInfo(this.props.month, this.props.year).map(week => (
+            <div className="row checkoutCalRow">
               { /* if day is null, nothing gets rendered */
-                week.map((obj, j) => (<div key={i * DAY_COLS + j} className={obj.css} onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
-                onMouseEnter={this.onCellEnter.bind(this, this.props.month, this.props.year)} >{obj.day}</div> ))
+                week.map(obj => (
+                  <div
+                    className={obj.css}
+                    onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
+                    onMouseEnter={this.onCellEnter.bind(this, this.props.month, this.props.year)}
+                  >
+                    {obj.day}
+                  </div>
+                ))
               }
             </div>
           ))
         }
 
-        <CalendarFooter lastUpdated={'Updated 3 days ago'} onClear={this.onClear.bind(this)} />
+        <CalendarFooter
+          lastUpdated="Updated 3 days ago"
+          onClear={this.onClear.bind(this)}
+        />
       </div>
     );
   }
 }
 
-export {CalendarHeader, CalendarFooter};
+Calendar.propTypes = {
+  small: PropTypes.bool,
+  id: PropTypes.string.isRequired,
+  month: PropTypes.number.isRequired,
+  year: PropTypes.number.isRequired,
+  btnClick: PropTypes.func.isRequired,
+  initCheckin: PropTypes.bool.isRequired,
+  onChangeDate: PropTypes.func.isRequired,
+  checkinDay: PropTypes.number,
+  checkoutDay: PropTypes.number,
+  resetDates: PropTypes.func.isRequired,
+};
+
+Calendar.defaultProps = {
+  small: false,
+  checkinDay: null,
+  checkoutDay: null,
+};
+
+export { CalendarHeader, CalendarFooter };
