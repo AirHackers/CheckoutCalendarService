@@ -8,14 +8,14 @@ const server = 'http://127.0.0.1:3004';
 const CalendarHeader = ({
   btnClick, monthName, month, year,
 }) => (
-  <div className="row checkoutKeylinesTop">
-    <div className="col-md-3">
+  <div className="checkoutRow checkoutKeylinesTop">
+    <div className="checkout-3">
       <button type="button" className="btn btn-sm btn-outline-primary" onClick={btnClick.bind(this, true)}>←</button>
     </div>
-    <div className="col-md-6 checkoutCenterText">
+    <div className="checkout-6 checkoutCenterText">
       <strong>{`${monthName[month]} ${year}`}</strong>
     </div>
-    <div className="col-md-3">
+    <div className="checkout-3">
       <button type="button" className="btn btn-sm btn-outline-primary checkoutFloatRight" onClick={btnClick.bind(this, false)}>→</button>
     </div>
   </div>
@@ -31,9 +31,9 @@ CalendarHeader.propTypes = {
 const CalendarFooter = ({
   lastUpdated, onClear,
 }) => (
-  <div className="row checkoutKeylines">
-    <div className="col-md-8">{lastUpdated}</div>
-    <div className="col-md-4">
+  <div className="checkoutRow checkoutKeylines">
+    <div className="checkout-9">{lastUpdated}</div>
+    <div className="checkout-3">
       <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={onClear}>Clear</button>
     </div>
   </div>
@@ -190,7 +190,7 @@ export default class Calendar extends React.Component {
         // show as selected, past today, or reserved
         const currTime = currDate.getTime();
         const dayVal = day < 1 || day > lastDay ? null : day;
-        let css = currTime < midnightTmw && dayVal ? 'col checkoutCell checkoutPast' : 'col checkoutCell';
+        let css = currTime < midnightTmw && dayVal ? 'checkout-2 checkoutCell checkoutPast' : 'checkout-2 checkoutCell';
 
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
@@ -230,7 +230,7 @@ export default class Calendar extends React.Component {
 
   render() {
     return (
-      <div className={this.props.small ? 'card container checkoutMaxWidth' : 'card container'}>
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className='card checkoutContainer'>
         <CalendarHeader
           btnClick={this.props.btnClick}
           monthName={this.monthName}
@@ -238,14 +238,14 @@ export default class Calendar extends React.Component {
           year={this.props.year}
         />
 
-        <div className="row">
-          { this.days.map(day => (<div className="col checkoutWeekDay">{day}</div>)) }
+        <div className="checkoutCalRow">
+          { this.days.map(day => (<div className="checkout-2 checkoutWeekDay">{day}</div>)) }
         </div>
 
         {/* Render each day by inserting one week at a time.
           Days before and after the month have empty cells */
           this.getCellInfo(this.props.month, this.props.year).map(week => (
-            <div className="row checkoutCalRow">
+            <div className="checkoutCalRow checkoutCalRow">
               { /* if day is null, nothing gets rendered */
                 week.map(obj => (
                   <div

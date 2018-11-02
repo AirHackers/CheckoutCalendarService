@@ -1,3 +1,4 @@
+/* Margin classes */
 .checkoutKeylinesTop {
   margin-top: 8px;
 }
@@ -7,7 +8,7 @@
 }
 
 .checkoutBtnMargin {
-  margin: 16px;
+  margin: 16px 0 16px 0;
 }
 
 .checkoutCenterText {
@@ -26,14 +27,13 @@
   text-align: right;
 }
 
+/* Calendar cell classes */
 .checkoutWeekDay {
   text-align: center;
-  /* width: 41px; */
 }
 
 .checkoutCell {
   text-align: center;
-  /* width: 41px; */
   height: 41px;
 }
 
@@ -55,6 +55,49 @@
 
 .checkoutPast, .checkoutReserved {
   text-decoration: line-through;
+}
+
+/* CSS Grid layout */
+.checkoutContainer {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.checkoutRow {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
+}
+
+.checkoutCalRow {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+}
+
+.checkout-12 {
+  grid-column: span 12
+}
+
+.checkout-9 {
+  grid-column: span 9
+}
+
+.checkout-8 {
+  grid-column: span 8
+}
+
+.checkout-6 {
+  grid-column: span 6
+}
+
+.checkout-3 {
+  grid-column: span 3
+}
+
+.checkout-2 {
+  grid-column: span 2
 }
 
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */

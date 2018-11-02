@@ -191,7 +191,7 @@ export default class CheckoutCalendar extends React.Component {
     const checkoutStr = checkoutDay ? new Date(checkoutDay).toLocaleDateString() : 'Check out';
 
     return (
-      <div id={this.props.small ? 'checkoutMaxWidth' : null} className="card container">
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className="card checkoutContainer">
         <span className="checkoutKeylinesTop">
           { personPerNight
             ? (
@@ -209,8 +209,8 @@ export default class CheckoutCalendar extends React.Component {
 
         <hr />
         <span>Dates</span>
-        <div className="row checkoutKeylines">
-          <div className="col-md-6">
+        <div className="checkoutRow checkoutKeylines">
+          <div className="checkout-6">
             <input
               className={this.getClassesForInput(true)}
               type="text"
@@ -219,7 +219,7 @@ export default class CheckoutCalendar extends React.Component {
               readOnly
             />
           </div>
-          <div className="col-md-6">
+          <div className="checkout-6">
             <input
               className={this.getClassesForInput(false)}
               type="text"
@@ -261,8 +261,8 @@ export default class CheckoutCalendar extends React.Component {
         </Popover>
 
         <span>Guests</span>
-        <div className="row">
-          <div className="col">
+        <div className="checkoutRow">
+          <div className="checkout-12">
             <input
               id="guestText"
               ref={this.guestRef}
@@ -302,8 +302,8 @@ export default class CheckoutCalendar extends React.Component {
           )
         }
 
-        <div className="row">
-          <button className="checkoutBtnMargin col btn btn-danger" type="button">Request to Book</button>
+        <div className="checkoutRow">
+          <button className="checkoutBtnMargin checkout-12 btn btn-danger" type="button">Request to Book</button>
         </div>
 
         <span className="checkoutCenterText checkoutKeylines">You won’t be charged yet</span>

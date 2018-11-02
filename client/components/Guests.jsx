@@ -9,14 +9,14 @@ const GuestChooser = ({
   const secondClass = (quantity === limit || total >= limit) && !infant ? 'btn btn-outline-primary disabled' : 'btn btn-outline-primary';
 
   return (
-    <div className="row checkoutKeylines">
-      <div className="col">
+    <div className="checkoutRow checkoutKeylines">
+      <div className="checkout-3">
         <button type="button" className={firstClass} onClick={leftBtn.bind(this, idx)}>-</button>
       </div>
-      <div className="col">
+      <div className="checkout-3 checkoutCenterText">
         <span>{quantity}</span>
       </div>
-      <div className="col">
+      <div className="checkout-3">
         <button type="button" className={secondClass} onClick={rightBtn.bind(this, idx)}>+</button>
       </div>
     </div>
@@ -37,11 +37,11 @@ GuestChooser.propTypes = {
 const GuestRow = ({
   top, input, quantity, total, limit, idx, infant, leftBtn, rightBtn,
 }) => (
-  <div className={top ? 'row checkoutKeylinesTop' : 'row'}>
-    <div className="col">
+  <div className={top ? 'checkoutRow checkoutKeylinesTop' : 'checkoutRow'}>
+    <div className="checkout-6">
       {input}
     </div>
-    <div className="col">
+    <div className="checkout-6">
       <GuestChooser
         quantity={quantity}
         limit={limit}
@@ -76,7 +76,7 @@ GuestRow.defaultProps = {
 export default class Guests extends React.Component {
   render() {
     return (
-      <div id="guests" className="card container">
+      <div id="guests" className="card checkoutContainer">
         <GuestRow
           top
           input="Adults"
@@ -111,13 +111,10 @@ export default class Guests extends React.Component {
           {' '}
           guests maximum. Infants don’t count toward the number of guests.
         </span>
-        <div className="row checkoutKeylines">
-          {/* Invisible divs to position the button */}
-          <div className="col-md-6" />
-          <div className="col-md-4">
+        <div className="checkoutRow checkoutKeylines">
+          <div className="checkout-12">
             <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={this.props.close}>Close</button>
           </div>
-          <div className="col-md-2" />
         </div>
       </div>
     );
