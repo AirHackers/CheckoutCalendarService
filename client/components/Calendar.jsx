@@ -23,7 +23,7 @@ const CalendarHeader = ({
 
 CalendarHeader.propTypes = {
   btnClick: PropTypes.func.isRequired,
-  monthName: PropTypes.arrayOf.isRequired,
+  monthName: PropTypes.arrayOf(PropTypes.string).isRequired,
   month: PropTypes.number.isRequired,
   year: PropTypes.number.isRequired,
 };

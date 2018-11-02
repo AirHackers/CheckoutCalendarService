@@ -28,12 +28,13 @@ export default class CheckoutCalendar extends React.Component {
       personPerNight: null,
       cleaning: null,
       guests: [1, 0, 0],
-      prevTotalGuests: 1,
       limit: 10,
       showGuests: false,
       isChoosingCheckIn: true,
       checkinDay: null,
       checkoutDay: null,
+      anchorEl: null,
+      prevTotalGuests: 1,
     };
 
     // Add ref to allow changing of guest input, and detect if clicked outside
@@ -180,20 +181,25 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   render() {
-    const checkinStr = this.state.checkinDay ? new Date(this.state.checkinDay).toLocaleDateString() : 'Check in';
-    const checkoutStr = this.state.checkoutDay ? new Date(this.state.checkoutDay).toLocaleDateString() : 'Check out';
+    const {
+      month, year, nights, price, personPerNight, cleaning, guests,
+      limit, showGuests, isChoosingCheckIn, checkinDay, checkoutDay, anchorEl,
+    } = this.state;
+    const checkinStr = checkinDay ? new Date(checkinDay).toLocaleDateString() : 'Check in';
+    const checkoutStr = checkoutDay ? new Date(checkoutDay).toLocaleDateString() : 'Check out';
+
     return (
       <div id={this.props.small ? 'checkoutMaxWidth' : null} className="card container">
         <span className="checkoutKeylinesTop">
-          { this.state.personPerNight
+          { personPerNight
             ? (
               <span>
                 <strong>
-$
-                  {this.state.personPerNight}
+                  $
+                  {personPerNight}
                 </strong>
                 {' '}
-per night
+                  per night
               </span>
             ) : <span>Loading...</span>
         }
@@ -203,22 +209,34 @@ per night
         <span>Dates</span>
         <div className="row checkoutKeylines">
           <div className="col-md-6">
-            <input className={this.getClassesForInput(true)} type="text" value={checkinStr} onClick={this.onInputClick.bind(this, true)} readOnly />
+            <input
+              className={this.getClassesForInput(true)}
+              type="text"
+              value={checkinStr}
+              onClick={this.onInputClick.bind(this, true)}
+              readOnly
+            />
           </div>
           <div className="col-md-6">
-            <input className={this.getClassesForInput(false)} type="text" value={checkoutStr} onClick={this.onInputClick.bind(this, false)} readOnly />
+            <input
+              className={this.getClassesForInput(false)}
+              type="text"
+              value={checkoutStr}
+              onClick={this.onInputClick.bind(this, false)}
+              readOnly
+            />
           </div>
         </div>
 
         {/* The Popover allows customizing its position and whether it is open */}
         <Popover
           id="simple-popper"
-          open={Boolean(this.state.anchorEl)}
-          anchorEl={this.state.anchorEl}
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
           onClose={this.handleClose.bind(this)}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: this.state.isChoosingCheckIn ? 'right' : 'left',
+            horizontal: isChoosingCheckIn ? 'right' : 'left',
           }}
           transformOrigin={{
             vertical: 'top',
@@ -229,13 +247,13 @@ per night
             small
             ref={this.calRef}
             id={this.props.match.params.id}
-            month={this.state.month}
-            year={this.state.year}
+            month={month}
+            year={year}
             btnClick={this.onCalBtnClick.bind(this)}
-            initCheckin={this.state.isChoosingCheckIn}
+            initCheckin={isChoosingCheckIn}
             onChangeDate={this.onChangeDate.bind(this)}
-            checkinDay={this.state.checkinDay}
-            checkoutDay={this.state.checkoutDay}
+            checkinDay={checkinDay}
+            checkoutDay={checkoutDay}
             resetDates={this.onResetDates.bind(this)}
           />
         </Popover>
@@ -243,17 +261,25 @@ per night
         <span>Guests</span>
         <div className="row">
           <div className="col">
-            <input id="guestText" ref={this.guestRef} className="form-control" type="text" defaultValue="1 Guest" onClick={this.onToggleGuests.bind(this)} readOnly />
+            <input
+              id="guestText"
+              ref={this.guestRef}
+              className="form-control"
+              type="text"
+              defaultValue="1 Guest"
+              onClick={this.onToggleGuests.bind(this)}
+              readOnly
+            />
           </div>
         </div>
 
-        { this.state.showGuests
+        { showGuests
           && (
           <Guests
-            adults={this.state.guests[ADULTS]}
-            childrenNum={this.state.guests[CHILDREN]}
-            infants={this.state.guests[INFANTS]}
-            limit={this.state.limit}
+            adults={guests[ADULTS]}
+            childrenNum={guests[CHILDREN]}
+            infants={guests[INFANTS]}
+            limit={limit}
             total={this.getTotalGuests()}
             leftBtn={this.leftBtnFor.bind(this)}
             rightBtn={this.rightBtnFor.bind(this)}
@@ -262,13 +288,13 @@ per night
           )
         }
 
-        { this.state.checkinDay && this.state.checkoutDay
+        { checkinDay && checkoutDay
           && (
           <Breakdown
-            perPerson={this.state.personPerNight}
-            nights={this.state.nights}
-            cleaning={this.state.cleaning}
-            total={this.state.price}
+            perPerson={personPerNight}
+            nights={nights}
+            cleaning={cleaning}
+            total={price}
           />
           )
         }
@@ -277,16 +303,18 @@ per night
           <button className="checkoutBtnMargin col btn btn-danger" type="button">Request to Book</button>
         </div>
 
-        <span className="checkoutCenterText">You won’t be charged yet</span>
+        <span className="checkoutCenterText checkoutKeylines">You won’t be charged yet</span>
       </div>
     );
   }
 }
 
 CheckoutCalendar.propTypes = {
-  match: PropTypes.objectOf.isRequired,
-  params: PropTypes.objectOf.isRequired,
-  id: PropTypes.string.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  }),
   small: PropTypes.bool,
 };
 

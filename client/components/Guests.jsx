@@ -106,7 +106,7 @@ export default class Guests extends React.Component {
           leftBtn={this.props.leftBtn}
           rightBtn={this.props.rightBtn}
         />
-        <span className="checkoutCenterText">
+        <span className="checkoutCenterText checkoutKeylines">
           {this.props.limit}
           {' '}
           guests maximum. Infants don’t count toward the number of guests.
