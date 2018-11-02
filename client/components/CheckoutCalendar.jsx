@@ -27,6 +27,7 @@ export default class CheckoutCalendar extends React.Component {
       price: null,
       personPerNight: null,
       cleaning: null,
+      service: null,
       guests: [1, 0, 0],
       limit: 10,
       showGuests: false,
@@ -73,6 +74,7 @@ export default class CheckoutCalendar extends React.Component {
           price: response.totalCost,
           personPerNight: response.personPerNight,
           cleaning: response.cleaning,
+          service: response.service,
         });
       })
       .catch((err) => {
@@ -182,7 +184,7 @@ export default class CheckoutCalendar extends React.Component {
 
   render() {
     const {
-      month, year, nights, price, personPerNight, cleaning, guests,
+      month, year, nights, price, personPerNight, cleaning, service, guests,
       limit, showGuests, isChoosingCheckIn, checkinDay, checkoutDay, anchorEl,
     } = this.state;
     const checkinStr = checkinDay ? new Date(checkinDay).toLocaleDateString() : 'Check in';
@@ -294,6 +296,7 @@ export default class CheckoutCalendar extends React.Component {
             perPerson={personPerNight}
             nights={nights}
             cleaning={cleaning}
+            service={service}
             total={price}
           />
           )

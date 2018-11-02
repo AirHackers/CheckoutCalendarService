@@ -22,10 +22,14 @@ class Models {
   // Returns an object that represents information for the checkout module
   // TODO: Formula needs to depend on data from a listing based on the foreign key ID
   static calcPrice(id, nights, guests) {
+    const [personPerNight, cleaning] = [(100 + 7 * guests), 50];
+    const service = Math.floor((Math.random() * 0.08 + 0.07) * (personPerNight * nights + cleaning));
+    const totalCost = personPerNight * nights + cleaning + service;
     return {
-      totalCost: (100 + 7 * guests) * nights + 50,
-      personPerNight: (100 + 7 * guests),
-      cleaning: 50,
+      totalCost,
+      personPerNight,
+      cleaning,
+      service,
     };
   }
 
