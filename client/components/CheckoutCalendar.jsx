@@ -191,7 +191,7 @@ export default class CheckoutCalendar extends React.Component {
     const checkoutStr = checkoutDay ? new Date(checkoutDay).toLocaleDateString() : 'Check out';
 
     return (
-      <div id={this.props.small ? 'checkoutMaxWidth' : null} className="card checkoutContainer">
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className="checkoutCard checkoutContainer">
         <span className="checkoutKeylinesTop">
           { personPerNight
             ? (
@@ -208,10 +208,11 @@ export default class CheckoutCalendar extends React.Component {
         </span>
 
         <hr />
-        <span>Dates</span>
+        <label htmlFor="checkinInput">Dates</label>
         <div className="checkoutRow checkoutKeylines">
           <div className="checkout-6">
             <input
+              id="checkinInput"
               className={this.getClassesForInput(true)}
               type="text"
               value={checkinStr}
@@ -260,7 +261,7 @@ export default class CheckoutCalendar extends React.Component {
           />
         </Popover>
 
-        <span>Guests</span>
+        <label htmlFor="guestText">Guests</label>
         <div className="checkoutRow">
           <div className="checkout-12">
             <input

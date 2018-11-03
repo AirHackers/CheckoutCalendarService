@@ -230,7 +230,7 @@ export default class Calendar extends React.Component {
 
   render() {
     return (
-      <div id={this.props.small ? 'checkoutMaxWidth' : null} className='card checkoutContainer'>
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className='checkoutCard checkoutContainer'>
         <CalendarHeader
           btnClick={this.props.btnClick}
           monthName={this.monthName}

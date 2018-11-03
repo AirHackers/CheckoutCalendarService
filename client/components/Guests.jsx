@@ -76,7 +76,7 @@ GuestRow.defaultProps = {
 export default class Guests extends React.Component {
   render() {
     return (
-      <div id="guests" className="card checkoutContainer">
+      <div id="guests" className="checkoutCard checkoutContainer">
         <GuestRow
           top
           input="Adults"

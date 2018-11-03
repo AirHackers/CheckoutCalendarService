@@ -27,6 +27,12 @@
   text-align: right;
 }
 
+/* Horizonial Line, 10% black */
+hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, .1);
+}
+
 /* Calendar cell classes */
 .checkoutWeekDay {
   text-align: center;
@@ -98,6 +104,17 @@
 
 .checkout-2 {
   grid-column: span 2
+}
+
+.checkoutCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
