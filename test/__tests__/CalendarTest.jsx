@@ -2,13 +2,13 @@ import { mount } from 'enzyme';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 
-import Calendar, { CalendarHeader, CalendarFooter } from '../../client/components/Calendar';
+import Calendar, { CalendarHeader } from '../../client/components/Calendar';
 
 // Define variables and functions here to be dependency injected to each component as props
 const monthName = ['January', 'Feburary', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
+const id = '0';
 let month = 8;
 let year = 2018;
 let checkinDay = null;
@@ -16,7 +16,7 @@ let checkoutDay = null;
 
 let expectedNights;
 
-const onBtnClick = function (left) {
+const onBtnClick = function onBtnClick(left) {
   month += 1;
   if (month === 13) {
     month = 0;
@@ -24,7 +24,7 @@ const onBtnClick = function (left) {
   }
 };
 
-const onChangeDate = function (isCheckIn, timeStamp) {
+const onChangeDate = function onChangeDate(isCheckIn, timeStamp) {
   let nights = null;
   if (checkinDay && !isCheckIn) {
     nights = (timeStamp - checkinDay) / 86400000;
@@ -39,7 +39,7 @@ const onChangeDate = function (isCheckIn, timeStamp) {
   }
 };
 
-const onReset = function () {
+const onReset = function onReset() {
   checkinDay = null;
   checkoutDay = null;
 };
@@ -76,20 +76,25 @@ describe('Calendar component test suite', () => {
     const calendar = mount(
       <Calendar
         small
-        id={0}
+        id={id}
         month={8}
         year={2018}
         btnClick={onBtnClick}
+        onChangeDate={onChangeDate}
+        checkinDay={null}
+        checkoutDay={null}
         initCheckin
+        resetDates={onReset}
       />,
     );
+    const MIN_ROWS = 6; // Includes the row for names of days
 
     // Locate the right sided button by selecting with two classes, simulate clicks
     const rightBtn = calendar.find('.btn-sm.checkoutFloatRight');
 
     // Find the number of calendar rows, verify the correct number based on the current month
     let rows = calendar.find('.checkoutCalRow');
-    expect(rows.length).toBe(6); // September 2018 has 6 rows in the calendar
+    expect(rows.length).toBe(MIN_ROWS + 1); // September 2018 has 6 rows in the calendar
 
     // Click, update props
     rightBtn.simulate('click');
@@ -97,7 +102,7 @@ describe('Calendar component test suite', () => {
     calendar.update();
 
     rows = calendar.find('.checkoutCalRow');
-    expect(rows.length).toBe(5); // October 2018 has 5 rows in the calendar
+    expect(rows.length).toBe(MIN_ROWS); // October 2018 has 5 rows in the calendar
   });
 
   it('should display dashes on all cells before today', () => {
@@ -106,11 +111,15 @@ describe('Calendar component test suite', () => {
     const calendar = mount(
       <Calendar
         small
-        id={0}
+        id={id}
         month={thisMonth - 2}
         year={2018}
         btnClick={onBtnClick}
+        onChangeDate={onChangeDate}
+        checkinDay={null}
+        checkoutDay={null}
         initCheckin
+        resetDates={onReset}
       />,
     );
 
@@ -122,9 +131,9 @@ describe('Calendar component test suite', () => {
     const calendar = mount(
       <Calendar
         small
-        id={0}
-        month={10}
-        year={2018}
+        id={id}
+        month={1}
+        year={2020}
         btnClick={onBtnClick}
         initCheckin
         onChangeDate={onChangeDate}
@@ -140,15 +149,16 @@ describe('Calendar component test suite', () => {
     calendar.setProps({ checkinDay });
     calendar.update();
 
-    const second = calendar.find('.checkoutAvailable').at(14);
+    // The 10th cell is no longer considered available, so the 15th is now at index 14 - 1
+    const second = calendar.find('.checkoutAvailable').at(13);
     second.simulate('click');
     calendar.setProps({ checkoutDay });
     calendar.update();
 
     const firstDate = new Date(checkinDay).getDate();
     const secondDate = new Date(checkoutDay).getDate();
-    expect(firstDate).toBe(11);
-    expect(secondDate).toBe(17);
+    expect(firstDate).toBe(10);
+    expect(secondDate).toBe(15);
     expect(secondDate - firstDate).toBe(expectedNights);
 
     // Reset booking
@@ -163,7 +173,7 @@ describe('Calendar component test suite', () => {
     const calendar = mount(
       <Calendar
         small
-        id={0}
+        id={id}
         month={10}
         year={2018}
         btnClick={onBtnClick}

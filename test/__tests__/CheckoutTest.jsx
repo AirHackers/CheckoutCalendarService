@@ -104,8 +104,8 @@ describe('Checkout component test suite', () => {
 
     // Trigger props to change the number of guests
     for (let i = 0; i < 5; i += 1) {
-      comp.instance().rightBtnFor(ADULTS);
-      comp.instance().rightBtnFor(CHILDREN);
+      comp.instance().onRightBtnFor(ADULTS);
+      comp.instance().onRightBtnFor(CHILDREN);
     }
 
     let currGuests = comp.state('guests');
@@ -113,7 +113,7 @@ describe('Checkout component test suite', () => {
 
     // Try to add more adults, but verify nothing changed.
     for (let i = 0; i < 5; i += 1) {
-      comp.instance().rightBtnFor(ADULTS);
+      comp.instance().onRightBtnFor(ADULTS);
     }
 
     currGuests = comp.state('guests');
@@ -121,7 +121,7 @@ describe('Checkout component test suite', () => {
 
     // Remove children, verify five adults and 1 from the beginning
     for (let i = 0; i < 10; i += 1) {
-      comp.instance().leftBtnFor(CHILDREN);
+      comp.instance().onLeftBtnFor(CHILDREN);
     }
     currGuests = comp.state('guests');
     expect(currGuests[0] + currGuests[1]).toBe(6);

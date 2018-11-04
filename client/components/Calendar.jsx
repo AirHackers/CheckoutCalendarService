@@ -79,6 +79,8 @@ export default class Calendar extends React.Component {
       reservedSet: new Set(),
     };
 
+    this.onClear = this.onClear.bind(this);
+
     // Lookup tables to quickly get information
     this.days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
     this.daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -276,7 +278,7 @@ export default class Calendar extends React.Component {
         />
 
         <div className="checkoutCalRow">
-          { this.days.map(day => (<div className="checkout-2 checkoutWeekDay">{day}</div>)) }
+          { this.days.map(day => (<div key={day} className="checkout-2 checkoutWeekDay">{day}</div>)) }
         </div>
 
         {/* Render each day by inserting one week at a time.
@@ -301,7 +303,7 @@ export default class Calendar extends React.Component {
 
         <CalendarFooter
           lastUpdated="Updated 3 days ago"
-          onClear={this.onClear.bind(this)}
+          onClear={this.onClear}
         />
       </div>
     );

@@ -43,6 +43,14 @@ export default class CheckoutCalendar extends React.Component {
     this.calRef = React.createRef();
   }
 
+  // On load, show price for 1 guest for 1 day
+  componentDidMount() {
+    this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
+
+    // Cache guest element, create listener to check clicks outside it
+    document.addEventListener('mousedown', this.onOutsideClick.bind(this));
+  }
+
   // Called when the check in/out inputs are clicked, trigger pop over!
   onInputClick(left, event) {
     this.setState({
@@ -53,48 +61,6 @@ export default class CheckoutCalendar extends React.Component {
     if (this.calRef.current) {
       this.calRef.current.setCheckinState(this.state.isChoosingCheckIn);
     }
-  }
-
-  // Total guests don't count the number of infants
-  getTotalGuests() {
-    return this.state.guests[ADULTS] + this.state.guests[CHILDREN];
-  }
-
-  // Determine whether a text input should have a green border
-  // surrounding it (indicating current selection)
-  getClassesForInput(forCheckIn) {
-    return Boolean(this.state.anchorEl) && this.state.isChoosingCheckIn === forCheckIn ? 'form-control is-valid' : 'form-control';
-  }
-
-  loadPrice(id, guests, nights) {
-    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&nights=${nights}`)
-      .then(response => response.json())
-      .then((response) => {
-        this.setState({
-          price: response.totalCost,
-          personPerNight: response.personPerNight,
-          cleaning: response.cleaning,
-          service: response.service,
-        });
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }
-
-  // On load, show price for 1 guest for 1 day
-  componentDidMount() {
-    this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
-
-    // Cache guest element, create listener to check clicks outside it
-    document.addEventListener('mousedown', this.onOutsideClick.bind(this));
-  }
-
-  // Called when clicked outside of the pop over.
-  handleClose() {
-    this.setState({
-      anchorEl: null,
-    });
   }
 
   // Update the month and year and call Calendar.setReservedData
@@ -110,27 +76,25 @@ export default class CheckoutCalendar extends React.Component {
       month = month < 11 ? month + 1 : 0;
     }
 
-    this.setState({
-      month, year,
-    });
+    this.setState(() => ({ month, year }));
 
     if (this.calRef.current) {
       this.calRef.current.setReservedData(this.props.match.params.id, month, year);
     }
   }
 
-  leftBtnFor(idx) {
+  onLeftBtnFor(idx) {
     const guests = this.state.guests;
     if (guests[idx] !== 0) {
       guests[idx] -= 1;
       this.setState({ guests });
       const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';
-      
+
       this.guestRef.current.value = `${this.getTotalGuests()} guests${infants}`;
     }
   }
 
-  rightBtnFor(idx) {
+  onRightBtnFor(idx) {
     const guests = this.state.guests;
     if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
       guests[idx] += 1;
@@ -156,10 +120,10 @@ export default class CheckoutCalendar extends React.Component {
       this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
     }
 
-    this.setState({
+    this.setState(prevState => ({
       prevTotalGuests: this.getTotalGuests(),
-      showGuests: !this.state.showGuests,
-    });
+      showGuests: !prevState.showGuests,
+    }));
   }
 
   // Date is changed, if check in and out dates exist, also update price and close popover
@@ -167,7 +131,7 @@ export default class CheckoutCalendar extends React.Component {
     let nights = null;
     if (this.state.checkinDay && !isCheckIn) {
       nights = (timeStamp - this.state.checkinDay) / MILLI_SEC_IN_DAY;
-    } else if(this.state.checkoutDay && isCheckIn) {
+    } else if (this.state.checkoutDay && isCheckIn) {
       nights = (this.state.checkoutDay - timeStamp) / MILLI_SEC_IN_DAY;
     }
 
@@ -188,6 +152,40 @@ export default class CheckoutCalendar extends React.Component {
       checkinDay: null,
       checkoutDay: null,
     });
+  }
+
+  // Total guests don't count the number of infants
+  getTotalGuests() {
+    return this.state.guests[ADULTS] + this.state.guests[CHILDREN];
+  }
+
+  // Determine whether a text input should have a green border
+  // surrounding it (indicating current selection)
+  getClassesForInput(forCheckIn) {
+    return Boolean(this.state.anchorEl) && this.state.isChoosingCheckIn === forCheckIn ? 'form-control is-valid' : 'form-control';
+  }
+
+  // Called when clicked outside of the pop over.
+  handleClose() {
+    this.setState({
+      anchorEl: null,
+    });
+  }
+
+  loadPrice(id, guests, nights) {
+    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&nights=${nights}`)
+      .then(response => response.json())
+      .then((response) => {
+        this.setState({
+          price: response.totalCost,
+          personPerNight: response.personPerNight,
+          cleaning: response.cleaning,
+          service: response.service,
+        });
+      })
+      .catch((err) => {
+        throw err;
+      });
   }
 
   render() {
@@ -292,8 +290,8 @@ export default class CheckoutCalendar extends React.Component {
             infants={guests[INFANTS]}
             limit={limit}
             total={this.getTotalGuests()}
-            leftBtn={this.leftBtnFor.bind(this)}
-            rightBtn={this.rightBtnFor.bind(this)}
+            leftBtn={this.onLeftBtnFor.bind(this)}
+            rightBtn={this.onRightBtnFor.bind(this)}
             close={this.onToggleGuests.bind(this)}
           />
           )
