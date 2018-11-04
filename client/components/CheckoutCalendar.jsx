@@ -164,6 +164,11 @@ export default class CheckoutCalendar extends React.Component {
     let nights = null;
     if (this.state.checkinDay && !isCheckIn) {
       nights = (timeStamp - this.state.checkinDay) / MILLI_SEC_IN_DAY;
+    } else if(this.state.checkoutDay && isCheckIn) {
+      nights = (this.state.checkoutDay - timeStamp) / MILLI_SEC_IN_DAY;
+    }
+
+    if (nights) {
       this.loadPrice(this.props.match.params.id, this.getTotalGuests(), nights);
       this.handleClose();
     }

@@ -131,16 +131,17 @@ export default class Calendar extends React.Component {
   onCellEnter(month, year, event) {
     const day = Number.parseInt(event.target.textContent, 10);
 
-    if (day) {
+    // Do not set the hovered date when check out day is being selected but no check in day set
+    if ((day && this.state.isChoosingCheckIn) || (day && !this.state.isChoosingCheckIn && this.props.checkinDay)) {
       this.setState({
         currHovered: new Date(year, month, day).getTime(),
       });
     }
   }
 
+  // Does not change whether the user is checking in or out
   onClear() {
     this.setState({
-      isChoosingCheckIn: true,
       currHovered: null,
     });
 
@@ -194,7 +195,7 @@ export default class Calendar extends React.Component {
 
         if (this.state.reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
-        } else if (dayVal && currTime > this.props.checkinDay
+        } else if (dayVal && this.props.checkinDay && currTime > this.props.checkinDay
           && currTime < this.props.checkoutDay) {
           css += ' checkoutReserveRange';
         } else if ((dayVal && currTime === this.props.checkinDay)

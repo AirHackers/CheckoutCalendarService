@@ -27,7 +27,7 @@
   text-align: right;
 }
 
-/* Horizonial Line, 10% black */
+/* Horizontal Line, 10% black */
 hr {
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, .1);
