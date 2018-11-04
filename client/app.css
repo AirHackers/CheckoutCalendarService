@@ -38,9 +38,41 @@ hr {
   text-align: center;
 }
 
+/* Override the default button styling for calendar cells */
+button, .checkoutCell {
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+
 .checkoutCell {
+  border-top: 1px solid rgba(0, 0, 0, .1);
+  border-right: 1px solid rgba(0, 0, 0, .1);
+  background-color: #fff;
   text-align: center;
   height: 41px;
+}
+
+/* Border classes for general cell types */
+.checkoutCellSunday {
+  border-left: 1px solid rgba(0, 0, 0, .1);
+}
+
+.checkoutCellLastWeek {
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.checkoutCellNone {
+  border: none;
+}
+
+/* Border classes for empty cells by first day and after last day */
+.checkoutCellZero {
+  border-right: 1px solid rgba(0, 0, 0, .1);
+}
+
+.checkoutCellPostMonth {
+  border-top: 1px solid rgba(0, 0, 0, .1);
 }
 
 .checkoutAvailable:hover {

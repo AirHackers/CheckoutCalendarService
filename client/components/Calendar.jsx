@@ -31,7 +31,7 @@ CalendarHeader.propTypes = {
 const CalendarFooter = ({
   lastUpdated, onClear,
 }) => (
-  <div className="checkoutRow checkoutKeylines">
+  <div className="checkoutRow checkoutKeylines checkoutKeylinesTop">
     <div className="checkout-9">{lastUpdated}</div>
     <div className="checkout-3">
       <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={onClear}>Clear</button>
@@ -87,7 +87,8 @@ export default class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    this.setReservedData(this.props.id, this.props.month, this.props.year);
+    const { id, month, year } = this.props;
+    this.setReservedData(id, month, year);
   }
 
   // Listener methods
@@ -95,26 +96,29 @@ export default class Calendar extends React.Component {
   // If neither check day has been set, set the check in date
   // If checkIn has been set, set the checkout date
   onCellClick(month, year, event) {
+    const { checkinDay, checkoutDay, onChangeDate } = this.props;
+    const { reservedSet, isChoosingCheckIn } = this.state;
+
     // Validate the date is correct, first by checking the event target text
     const day = Number.parseInt(event.target.textContent, 10);
 
-    if (day && !this.state.reservedSet.has(day)) {
+    if (day && !reservedSet.has(day)) {
       const clickDate = new Date(year, month, day);
       const midnightTmw = new Date().setHours(24, 0, 0, 0);
 
       // Don't highlight a date if not bookable
-      if (!this.isRangeBookable(new Date(this.props.checkinDay).getDate(), clickDate.getDate())) {
+      if (!this.isRangeBookable(new Date(checkinDay).getDate(), clickDate.getDate())) {
         return;
       }
 
       if (clickDate.getTime() > midnightTmw) {
         // Determine whether to set this date as check out or check in
-        let isCheckIn = this.state.isChoosingCheckIn;
-        if (this.props.checkoutDay && this.props.checkoutDay <= clickDate.getTime()) {
+        let isCheckIn = isChoosingCheckIn;
+        if (checkoutDay && checkoutDay <= clickDate.getTime()) {
           isCheckIn = false;
         }
 
-        if (this.props.checkinDay && this.props.checkinDay >= clickDate.getTime()) {
+        if (checkinDay && checkinDay >= clickDate.getTime()) {
           isCheckIn = true;
         }
 
@@ -122,7 +126,7 @@ export default class Calendar extends React.Component {
           isChoosingCheckIn: !isCheckIn,
         });
 
-        this.props.onChangeDate(isCheckIn, clickDate.getTime());
+        onChangeDate(isCheckIn, clickDate.getTime());
       }
     }
   }
@@ -130,9 +134,12 @@ export default class Calendar extends React.Component {
   // If date is valid, save the current date being hovered over
   onCellEnter(month, year, event) {
     const day = Number.parseInt(event.target.textContent, 10);
+    const { isChoosingCheckIn } = this.state;
+    const { checkinDay } = this.props;
 
     // Do not set the hovered date when check out day is being selected but no check in day set
-    if ((day && this.state.isChoosingCheckIn) || (day && !this.state.isChoosingCheckIn && this.props.checkinDay)) {
+    if ((day && isChoosingCheckIn)
+      || (day && !isChoosingCheckIn && checkinDay)) {
       this.setState({
         currHovered: new Date(year, month, day).getTime(),
       });
@@ -141,11 +148,12 @@ export default class Calendar extends React.Component {
 
   // Does not change whether the user is checking in or out
   onClear() {
+    const { resetDates } = this.props;
     this.setState({
       currHovered: null,
     });
 
-    this.props.resetDates();
+    resetDates();
   }
 
   setCheckinState(isCheckInDate) {
@@ -169,6 +177,9 @@ export default class Calendar extends React.Component {
   // Return an 2-D array, seven elements for each row that
   // indicates the month day number for each week day.
   getCellInfo(month, year) {
+    const { checkinDay, checkoutDay } = this.props;
+    const { isChoosingCheckIn, reservedSet, currHovered } = this.state;
+
     const result = [];
     const firstDay = Calendar.firstDayOfWeekFor(month, year);
     const lastDay = this.daysInMonth[month];
@@ -193,20 +204,41 @@ export default class Calendar extends React.Component {
         const dayVal = day < 1 || day > lastDay ? null : day;
         let css = currTime < midnightTmw && dayVal ? 'checkout-2 checkoutCell checkoutPast' : 'checkout-2 checkoutCell';
 
-        if (this.state.reservedSet.has(dayVal)) {
+        if (reservedSet.has(dayVal)) {
           css += ' checkoutReserved';
-        } else if (dayVal && this.props.checkinDay && currTime > this.props.checkinDay
-          && currTime < this.props.checkoutDay) {
+        } else if (dayVal && checkinDay && currTime > checkinDay
+          && currTime < checkoutDay) {
           css += ' checkoutReserveRange';
-        } else if ((dayVal && currTime === this.props.checkinDay)
-          || currTime === this.props.checkoutDay) {
+        } else if ((dayVal && currTime === checkinDay)
+          || currTime === checkoutDay) {
           css += ' checkoutReserveEnd';
-        } else if (dayVal && !this.state.isChoosingCheckIn && this.state.currHovered
-          && currTime >= this.props.checkinDay && currTime <= this.state.currHovered
-          && this.isRangeBookable(new Date(this.props.checkinDay).getDate(), currDate.getDate())) {
+        } else if (dayVal && !isChoosingCheckIn && currHovered
+          && currTime >= checkinDay && currTime <= currHovered
+          && this.isRangeBookable(new Date(checkinDay).getDate(), currDate.getDate())) {
           css += ' checkoutSelection';
         } else if (dayVal && currTime >= midnightTmw) {
           css += ' checkoutAvailable';
+        }
+
+        // Determine border styling
+        if (!(day >= 1 && day <= lastDay)) {
+          css += ' checkoutCellNone';
+
+          if (day === 0) {
+            css += ' checkoutCellZero';
+          }
+
+          if (day > lastDay) {
+            css += ' checkoutCellPostMonth';
+          }
+        } else {
+          if (j === 0) {
+            css += ' checkoutCellSunday';
+          }
+
+          if (i === rows - 1) {
+            css += ' checkoutCellLastWeek';
+          }
         }
 
         week.push({ day: dayVal, css });
@@ -221,8 +253,9 @@ export default class Calendar extends React.Component {
   // Determine if a range contains a reserved day
   // TODO: Refactor with bit vector to make it faster
   isRangeBookable(start, end) {
+    const { reservedSet } = this.state;
     for (let i = start; i <= end; i += 1) {
-      if (this.state.reservedSet.has(i)) {
+      if (reservedSet.has(i)) {
         return false;
       }
     }
@@ -230,13 +263,16 @@ export default class Calendar extends React.Component {
   }
 
   render() {
+    const {
+      small, month, year, btnClick,
+    } = this.props;
     return (
-      <div id={this.props.small ? 'checkoutMaxWidth' : null} className='checkoutCard checkoutContainer'>
+      <div id={small ? 'checkoutMaxWidth' : null} className="checkoutCard checkoutContainer">
         <CalendarHeader
-          btnClick={this.props.btnClick}
+          btnClick={btnClick}
           monthName={this.monthName}
-          month={this.props.month}
-          year={this.props.year}
+          month={month}
+          year={year}
         />
 
         <div className="checkoutCalRow">
@@ -245,17 +281,18 @@ export default class Calendar extends React.Component {
 
         {/* Render each day by inserting one week at a time.
           Days before and after the month have empty cells */
-          this.getCellInfo(this.props.month, this.props.year).map(week => (
-            <div className="checkoutCalRow checkoutCalRow">
+          this.getCellInfo(month, year).map(week => (
+            <div className="checkoutCalRow">
               { /* if day is null, nothing gets rendered */
                 week.map(obj => (
-                  <div
+                  <button
+                    type="button"
                     className={obj.css}
-                    onClick={this.onCellClick.bind(this, this.props.month, this.props.year)}
-                    onMouseEnter={this.onCellEnter.bind(this, this.props.month, this.props.year)}
+                    onClick={this.onCellClick.bind(this, month, year)}
+                    onMouseEnter={this.onCellEnter.bind(this, month, year)}
                   >
                     {obj.day}
-                  </div>
+                  </button>
                 ))
               }
             </div>
