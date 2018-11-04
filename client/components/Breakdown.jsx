@@ -43,7 +43,7 @@ const Breakdown = ({
         </span>
       </div>
     </li>
-    
+
     <li className="list-group-item border-bottom-0">
       <div className="checkoutRow">
         <strong className="checkout-9">

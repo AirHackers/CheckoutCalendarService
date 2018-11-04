@@ -33,6 +33,10 @@ GuestChooser.propTypes = {
   rightBtn: PropTypes.func.isRequired,
 };
 
+GuestChooser.defaultProps = {
+  infant: false,
+};
+
 // Subcomponent for the guest type and quantity
 const GuestRow = ({
   top, input, quantity, total, limit, idx, infant, leftBtn, rightBtn,
@@ -73,50 +77,67 @@ GuestRow.defaultProps = {
 };
 
 // Component for encapsulating specific guest types and quantities
-export default class Guests extends React.Component {
-  render() {
-    return (
-      <div id="guests" className="checkoutCard checkoutContainer">
-        <GuestRow
-          top
-          input="Adults"
-          quantity={this.props.adults}
-          total={this.props.total}
-          limit={this.props.limit}
-          idx={0}
-          leftBtn={this.props.leftBtn}
-          rightBtn={this.props.rightBtn}
-        />
-        <GuestRow
-          input="Children"
-          quantity={this.props.childrenNum}
-          total={this.props.total}
-          limit={this.props.limit}
-          idx={1}
-          leftBtn={this.props.leftBtn}
-          rightBtn={this.props.rightBtn}
-        />
-        <GuestRow
-          input="Infants"
-          quantity={this.props.infants}
-          total={this.props.total}
-          limit={this.props.limit}
-          idx={2}
-          infant
-          leftBtn={this.props.leftBtn}
-          rightBtn={this.props.rightBtn}
-        />
-        <span className="checkoutKeylines">
-          {this.props.limit}
-          {' '}
-          guests maximum. Infants don’t count toward the number of guests.
-        </span>
-        <div className="checkoutRow checkoutKeylines">
-          <div className="checkout-12">
-            <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={this.props.close}>Close</button>
-          </div>
-        </div>
+const Guests = ({
+  adults, childrenNum, infants, limit, total, leftBtn, rightBtn, close,
+}) => (
+  <div id="guests" className="checkoutCard checkoutContainer">
+    <GuestRow
+      top
+      input="Adults"
+      quantity={adults}
+      total={total}
+      limit={limit}
+      idx={0}
+      leftBtn={leftBtn}
+      rightBtn={rightBtn}
+    />
+    <GuestRow
+      input="Children"
+      quantity={childrenNum}
+      total={total}
+      limit={limit}
+      idx={1}
+      leftBtn={leftBtn}
+      rightBtn={rightBtn}
+    />
+    <GuestRow
+      input="Infants"
+      quantity={infants}
+      total={total}
+      limit={limit}
+      idx={2}
+      infant
+      leftBtn={leftBtn}
+      rightBtn={rightBtn}
+    />
+    <span className="checkoutKeylines">
+      {limit}
+      {' '}
+      guests maximum. Infants don’t count toward the number of guests.
+    </span>
+    <div className="checkoutRow checkoutKeylines">
+      <div className="checkout-12">
+        <button
+          type="button"
+          className="btn btn-outline-primary checkoutFloatRight"
+          onClick={close}
+        >
+          Close
+        </button>
       </div>
-    );
-  }
-}
+    </div>
+  </div>
+);
+
+Guests.propTypes = {
+  adults: PropTypes.number.isRequired,
+  childrenNum: PropTypes.number.isRequired,
+  infants: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  leftBtn: PropTypes.func.isRequired,
+  rightBtn: PropTypes.func.isRequired,
+  close: PropTypes.func.isRequired,
+};
+
+export default Guests;
