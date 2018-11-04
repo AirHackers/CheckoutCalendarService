@@ -124,7 +124,9 @@ export default class CheckoutCalendar extends React.Component {
     if (guests[idx] !== 0) {
       guests[idx] -= 1;
       this.setState({ guests });
-      this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
+      const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';
+      
+      this.guestRef.current.value = `${this.getTotalGuests()} guests${infants}`;
     }
   }
 
@@ -133,7 +135,8 @@ export default class CheckoutCalendar extends React.Component {
     if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
       guests[idx] += 1;
       this.setState({ guests });
-      this.guestRef.current.value = `${this.getTotalGuests()} Guests`;
+      const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';
+      this.guestRef.current.value = `${this.getTotalGuests()} guests${infants}`;
     }
   }
 
@@ -274,7 +277,7 @@ export default class CheckoutCalendar extends React.Component {
               ref={this.guestRef}
               className="form-control"
               type="text"
-              defaultValue="1 Guest"
+              defaultValue="1 guest"
               onClick={this.onToggleGuests.bind(this)}
               readOnly
             />
