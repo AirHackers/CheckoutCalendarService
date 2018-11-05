@@ -2,7 +2,20 @@ var path = require('path');
 var SRC_DIR = path.join(__dirname, '/client');
 var DIST_DIR = path.join(__dirname, '/public/dist');
 
-module.exports = {
+// Decide whether to use cssnano to minify CSS
+const getPlugins = (argv) => {
+  const plugins = [
+    require('autoprefixer')
+  ];
+
+  if (argv.mode === 'production') {
+    plugins.push(require('cssnano'));
+  }
+
+  return plugins;
+}
+
+module.exports = (env, argv) => ({
   entry: `${SRC_DIR}/index.jsx`,
   devtool: 'source-map',
   mode: 'development',
@@ -25,7 +38,12 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ],
+        use: [ { loader: 'style-loader' }, { loader: 'css-loader' }, {
+          loader: 'postcss-loader',
+          options: {
+            plugins: getPlugins(argv)
+          }
+        }],
         include: SRC_DIR
       },
       {
@@ -43,11 +61,7 @@ module.exports = {
             // Loader for webpack to process CSS with PostCSS
             loader: 'postcss-loader',
             options: {
-              plugins: function () {
-                return [
-                  require('autoprefixer')
-                ];
-              }
+              plugins: getPlugins(argv)
             }
           },
           {
@@ -58,4 +72,4 @@ module.exports = {
       }
     ]
   }
-};
+});
