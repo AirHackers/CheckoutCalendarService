@@ -11,4 +11,4 @@ ReactDOM.render((
   <BrowserRouter>
     <Route path="/listings/:id" render={props => <CheckoutCalendar {...props} small />} />
   </BrowserRouter>
-), document.getElementById('app'));
+), document.getElementById('checkout'));
