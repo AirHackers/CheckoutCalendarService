@@ -139,7 +139,6 @@ button, .checkoutCell {
 }
 
 .checkoutCard {
-  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -147,6 +146,22 @@ button, .checkoutCell {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.checkoutNoFloat {
+  margin-top: 24px;
+  
+  position: absolute;
+  right: 110px;
+}
+
+.checkoutFloat {
+  /* Allow the checkout widget to be fixed within the viewport */
+  margin-top: 24px;
+  
+  position: fixed;
+  right: 110px;
+  top: 50px;
 }
 
 .checkoutCard > hr {

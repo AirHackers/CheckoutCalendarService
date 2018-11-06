@@ -7,7 +7,7 @@ import Guests from './Guests';
 import Breakdown from './Breakdown';
 
 const ADULTS = 0; const CHILDREN = 1; const INFANTS = 2; const
-  MILLI_SEC_IN_DAY = 86400000;
+  MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450;
 const server = 'http://127.0.0.1:3004';
 
 // For material-ui, use typography v2
@@ -36,6 +36,7 @@ export default class CheckoutCalendar extends React.Component {
       checkoutDay: null,
       anchorEl: null,
       prevTotalGuests: 1,
+      floating: false,
     };
 
     // Add ref to allow changing of guest input, and detect if clicked outside
@@ -49,6 +50,9 @@ export default class CheckoutCalendar extends React.Component {
 
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
+    
+    // Allow Checkout to be fixed on the screen 
+    window.addEventListener('scroll', this.onHandleScroll.bind(this));
   }
 
   // Called when the check in/out inputs are clicked, trigger pop over!
@@ -102,6 +106,14 @@ export default class CheckoutCalendar extends React.Component {
       const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';
       this.guestRef.current.value = `${this.getTotalGuests()} guests${infants}`;
     }
+  }
+
+  onHandleScroll(event) {
+    let scrollTop = window.scrollY;
+
+    this.setState({
+      floating: scrollTop >= SCROLL_THRESHOLD
+    });
   }
 
   // Hide guest component if clicked outside of it and click not on guest text
@@ -195,9 +207,10 @@ export default class CheckoutCalendar extends React.Component {
     } = this.state;
     const checkinStr = checkinDay ? new Date(checkinDay).toLocaleDateString() : 'Check in';
     const checkoutStr = checkoutDay ? new Date(checkoutDay).toLocaleDateString() : 'Check out';
+    const classes = `checkoutCard checkoutContainer ${ this.state.floating ? 'checkoutFloat' : 'checkoutNoFloat' }`;
 
     return (
-      <div id={this.props.small ? 'checkoutMaxWidth' : null} className="checkoutCard checkoutContainer">
+      <div id={this.props.small ? 'checkoutMaxWidth' : null} className={classes}>
         <span className="checkoutKeylinesTop">
           { personPerNight
             ? (
