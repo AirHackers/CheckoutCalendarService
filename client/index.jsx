@@ -9,6 +9,6 @@ import './app.css';
 
 ReactDOM.render((
   <BrowserRouter>
-    <Route path="/home/:id" render={props => <CheckoutCalendar {...props} small />} />
+    <Route path="/homes/:id" render={props => <CheckoutCalendar {...props} small />} />
   </BrowserRouter>
 ), document.getElementById('checkout'));
