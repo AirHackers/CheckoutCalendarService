@@ -16,16 +16,3 @@ CREATE TABLE IF NOT EXISTS reservations (
   endDate INTEGER NOT NULL,
   homeId INTEGER NOT NULL
 );
-
--- ---
--- Table Properties
--- ---
-
--- ALTER TABLE `reservations` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ---
--- Test Data
--- ---
-
--- INSERT INTO `reservations` (`id`,`nights`,`guests`,`startDate`,`endDate`,`homeId`) VALUES
--- ('','','','','','');
