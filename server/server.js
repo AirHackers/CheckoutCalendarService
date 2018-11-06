@@ -12,6 +12,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Allow CORS for a given endpoint
+const allowCORS = function(res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+}
+
 // Endpoints for the Checkout component
 
 // Get all the reverse dates for a given month
@@ -26,6 +32,7 @@ app.get('/api/listings/:id/reserved', (req, res) => {
   } else {
     Models.getReservedDates(db, id, month, year)
       .then((result) => {
+        allowCORS(res);
         res.status(200).type('application/json');
         res.send(JSON.stringify(result));
       });
@@ -42,6 +49,7 @@ app.get('/api/listings/:id/compute', (req, res) => {
     res.status(400).type('application/json');
     res.send(JSON.stringify({ success: false, error: 'ID is missing or is not a number' }));
   } else {
+    allowCORS(res);
     res.status(200).type('application/json');
     res.send(JSON.stringify(Models.calcPrice(id, nights, guests)));
   }
@@ -56,6 +64,7 @@ app.get('/homes/:homeID', (req, res) => {
 app.post('/api/reserve', (req, res) => {
   Models.addReservation(db, req.body)
     .then((result) => {
+      allowCORS(res);
       res.status(201).type('application/json');
       res.send(JSON.stringify(result));
     });
