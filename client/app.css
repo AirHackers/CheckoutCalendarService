@@ -23,6 +23,32 @@
   float: right;
 }
 
+/* Font classes */
+.checkoutFont {
+  font-family: Circular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.checkoutSmall {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.checkoutGuests, .checkoutBtnText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.checkoutBook {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.checkoutCalMonth {
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .checkoutRightText {
   text-align: right;
 }
@@ -51,6 +77,9 @@ button, .checkoutCell {
   background-color: #fff;
   text-align: center;
   height: 41px;
+  
+  font-family: Circular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
 }
 
 /* Border classes for general cell types */
@@ -92,6 +121,7 @@ button, .checkoutCell {
 }
 
 .checkoutPast, .checkoutReserved {
+  color: rgb(216, 216, 216);
   text-decoration: line-through;
 }
 
@@ -172,4 +202,6 @@ button, .checkoutCell {
 /* Undo Bootstrap's gray color for disabled elements with a pseudoclass  */
 input[type="text"][readOnly] {
   background-color: #fff;
+  font-size: 17px;
+  font-weight: 400;
 }

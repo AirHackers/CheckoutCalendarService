@@ -13,7 +13,7 @@ const GuestChooser = ({
       <div className="checkout-3">
         <button type="button" className={firstClass} onClick={leftBtn.bind(this, idx)}>-</button>
       </div>
-      <div className="checkout-3 checkoutCenterText">
+      <div className="checkout-3 checkoutCenterText checkoutFont checkoutGuests">
         <span>{quantity}</span>
       </div>
       <div className="checkout-3">
@@ -42,7 +42,7 @@ const GuestRow = ({
   top, input, quantity, total, limit, idx, infant, leftBtn, rightBtn,
 }) => (
   <div className={top ? 'checkoutRow checkoutKeylinesTop' : 'checkoutRow'}>
-    <div className="checkout-6">
+    <div className="checkout-6 checkoutFont checkoutGuests">
       {input}
     </div>
     <div className="checkout-6">
@@ -110,7 +110,7 @@ const Guests = ({
       leftBtn={leftBtn}
       rightBtn={rightBtn}
     />
-    <span className="checkoutKeylines">
+    <span className="checkoutKeylines checkoutFont">
       {limit}
       {' '}
       guests maximum. Infants don’t count toward the number of guests.
@@ -119,7 +119,7 @@ const Guests = ({
       <div className="checkout-12">
         <button
           type="button"
-          className="btn btn-outline-primary checkoutFloatRight"
+          className="btn btn-outline-primary checkoutFloatRight checkoutFont checkoutBtnText"
           onClick={close}
         >
           Close

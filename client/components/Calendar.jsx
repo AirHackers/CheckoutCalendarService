@@ -8,12 +8,12 @@ const server = 'http://127.0.0.1:3004';
 const CalendarHeader = ({
   btnClick, monthName, month, year,
 }) => (
-  <div className="checkoutRow checkoutKeylinesTop">
+  <div className="checkoutRow checkoutKeylinesTop checkoutKeylines">
     <div className="checkout-3">
       <button type="button" className="btn btn-sm btn-outline-primary" onClick={btnClick.bind(this, true)}>←</button>
     </div>
     <div className="checkout-6 checkoutCenterText">
-      <strong>{`${monthName[month]} ${year}`}</strong>
+      <span className="checkoutFont checkoutCalMonth">{`${monthName[month]} ${year}`}</span>
     </div>
     <div className="checkout-3">
       <button type="button" className="btn btn-sm btn-outline-primary checkoutFloatRight" onClick={btnClick.bind(this, false)}>→</button>
@@ -32,9 +32,9 @@ const CalendarFooter = ({
   lastUpdated, onClear,
 }) => (
   <div className="checkoutRow checkoutKeylines checkoutKeylinesTop">
-    <div className="checkout-9">{lastUpdated}</div>
+    <span className="checkout-9 checkoutFont checkoutSmall">{lastUpdated}</span>
     <div className="checkout-3">
-      <button type="button" className="btn btn-outline-primary checkoutFloatRight" onClick={onClear}>Clear</button>
+      <button type="button" className="btn btn-outline-primary checkoutFloatRight checkoutFont checkoutBtnText" onClick={onClear}>Clear</button>
     </div>
   </div>
 );
@@ -278,7 +278,7 @@ export default class Calendar extends React.Component {
         />
 
         <div className="checkoutCalRow">
-          { this.days.map(day => (<div key={day} className="checkout-2 checkoutWeekDay">{day}</div>)) }
+          { this.days.map(day => (<div key={day} className="checkout-2 checkoutWeekDay checkoutFont checkoutSmall">{day}</div>)) }
         </div>
 
         {/* Render each day by inserting one week at a time.

@@ -9,11 +9,11 @@ const Breakdown = ({
   <ul className="list-group list-group-flush">
     <li className="list-group-item border-top-0">
       <div className="checkoutRow">
-        <span className="checkout-9">
+        <span className="checkout-9 checkoutFont">
           $
           {`${perPerson} x ${nights} nights`}
         </span>
-        <span className="checkout-3 checkoutRightText">
+        <span className="checkout-3 checkoutFont checkoutRightText">
           $
           {perPerson * nights}
         </span>
@@ -22,10 +22,10 @@ const Breakdown = ({
 
     <li className="list-group-item">
       <div className="checkoutRow">
-        <span className="checkout-9">
+        <span className="checkout-9 checkoutFont">
           Cleaning Fee
         </span>
-        <span className="checkout-3 checkoutRightText">
+        <span className="checkout-3 checkoutFont checkoutRightText">
           $
           {cleaning}
         </span>
@@ -34,10 +34,10 @@ const Breakdown = ({
 
     <li className="list-group-item">
       <div className="checkoutRow">
-        <span className="checkout-9">
+        <span className="checkout-9 checkoutFont">
           Service Fee
         </span>
-        <span className="checkout-3 checkoutRightText">
+        <span className="checkout-3 checkoutFont checkoutRightText">
           $
           {service}
         </span>
@@ -46,10 +46,10 @@ const Breakdown = ({
 
     <li className="list-group-item border-bottom-0">
       <div className="checkoutRow">
-        <strong className="checkout-9">
+        <strong className="checkout-9 checkoutFont checkoutBold">
           Total
         </strong>
-        <strong className="checkout-3 checkoutRightText">
+        <strong className="checkout-3 checkoutFont checkoutBold checkoutRightText">
           $
           {total}
         </strong>

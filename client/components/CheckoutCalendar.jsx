@@ -174,7 +174,11 @@ export default class CheckoutCalendar extends React.Component {
   // Determine whether a text input should have a green border
   // surrounding it (indicating current selection)
   getClassesForInput(forCheckIn) {
-    return Boolean(this.state.anchorEl) && this.state.isChoosingCheckIn === forCheckIn ? 'form-control is-valid' : 'form-control';
+    let str = 'form-control checkoutFont';
+    if (Boolean(this.state.anchorEl) && this.state.isChoosingCheckIn === forCheckIn) {
+      str += ' is-valid'; // Add Bootstrap class for green border
+    }
+    return str;
   }
 
   // Called when clicked outside of the pop over.
@@ -214,11 +218,11 @@ export default class CheckoutCalendar extends React.Component {
         <span className="checkoutKeylinesTop">
           { personPerNight
             ? (
-              <span>
-                <strong>
+              <span className="checkoutFont checkoutSmall">
+                <span className="checkoutBook">
                   $
                   {personPerNight}
-                </strong>
+                </span>
                 {' '}
                   per night
               </span>
@@ -227,7 +231,7 @@ export default class CheckoutCalendar extends React.Component {
         </span>
 
         <hr />
-        <label htmlFor="checkinInput">Dates</label>
+        <label htmlFor="checkinInput" className="checkoutFont checkoutSmall">Dates</label>
         <div className="checkoutRow checkoutKeylines">
           <div className="checkout-6">
             <input
@@ -280,13 +284,13 @@ export default class CheckoutCalendar extends React.Component {
           />
         </Popover>
 
-        <label htmlFor="guestText">Guests</label>
+        <label htmlFor="guestText" className="checkoutFont checkoutSmall">Guests</label>
         <div className="checkoutRow">
           <div className="checkout-12">
             <input
               id="guestText"
               ref={this.guestRef}
-              className="form-control"
+              className="form-control checkoutFont"
               type="text"
               defaultValue="1 guest"
               onClick={this.onToggleGuests.bind(this)}
@@ -323,10 +327,10 @@ export default class CheckoutCalendar extends React.Component {
         }
 
         <div className="checkoutRow">
-          <button className="checkoutBtnMargin checkout-12 btn btn-danger" type="button">Request to Book</button>
+          <button className="checkoutBtnMargin checkout-12 checkoutFont checkoutBook btn btn-danger" type="button">Request to Book</button>
         </div>
 
-        <span className="checkoutCenterText checkoutKeylines">You won’t be charged yet</span>
+        <span className="checkoutCenterText checkoutKeylines checkoutFont checkoutSmall">You won’t be charged yet</span>
       </div>
     );
   }

@@ -57,7 +57,7 @@ app.get('/api/listings/:id/compute', (req, res) => {
 
 // Handles HTML requests for a given ID, will be routed by React Router
 app.get('/homes/:homeID', (req, res) => {
-  res.sendFile(path.join(`${__dirname}/../public/index.html`));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Save body to DB
