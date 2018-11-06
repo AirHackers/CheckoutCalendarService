@@ -8,7 +8,8 @@
     "node": ">=6.13.0"
   },
   "scripts": {
-    "start": "webpack --debug --watch",
+    "start": "node server/server.js",
+    "dev": "webpack --debug --watch",
     "build": "webpack --mode production --devtool false",
     "seed": "node database/seed.js"
   },
