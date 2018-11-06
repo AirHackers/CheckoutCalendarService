@@ -144,28 +144,40 @@ button, .checkoutCell {
   grid-template-columns: repeat(14, 1fr);
 }
 
+#checkoutStarGrid {
+  display: flex;
+  flex-direction: row;
+}
+
 .checkout-12 {
-  grid-column: span 12
+  grid-column: span 12;
 }
 
 .checkout-9 {
-  grid-column: span 9
+  grid-column: span 9;
 }
 
 .checkout-8 {
-  grid-column: span 8
+  grid-column: span 8;
 }
 
 .checkout-6 {
-  grid-column: span 6
+  grid-column: span 6;
 }
 
 .checkout-3 {
-  grid-column: span 3
+  grid-column: span 3;
 }
 
 .checkout-2 {
-  grid-column: span 2
+  grid-column: span 2;
+}
+
+/* Centering for the number of reviews */
+.checkoutReviewNum {
+  margin-left: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .checkoutCard {

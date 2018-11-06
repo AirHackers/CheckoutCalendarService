@@ -7,8 +7,9 @@ import Guests from './Guests';
 import Breakdown from './Breakdown';
 
 const ADULTS = 0; const CHILDREN = 1; const INFANTS = 2; const
-  MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450;
+  MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450, MAX_RATING = 5;
 const server = 'http://127.0.0.1:3004';
+const reviews_server = 'http://127.0.0.1:3003';
 
 // For material-ui, use typography v2
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
@@ -37,6 +38,8 @@ export default class CheckoutCalendar extends React.Component {
       anchorEl: null,
       prevTotalGuests: 1,
       floating: false,
+      rating: null,
+      numReviews: null,
     };
 
     // Add ref to allow changing of guest input, and detect if clicked outside
@@ -47,6 +50,7 @@ export default class CheckoutCalendar extends React.Component {
   // On load, show price for 1 guest for 1 day
   componentDidMount() {
     this.loadPrice(this.props.match.params.id, this.getTotalGuests(), this.state.nights);
+    this.loadRating(this.props.match.params.id);
 
     // Cache guest element, create listener to check clicks outside it
     document.addEventListener('mousedown', this.onOutsideClick.bind(this));
@@ -165,6 +169,20 @@ export default class CheckoutCalendar extends React.Component {
       checkoutDay: null,
     });
   }
+  
+  getStar(filled) {
+    const style = {
+      height: '1em',
+      width: '1em',
+      fill: filled ? '#008489' : 'rgb(231, 231, 231)'
+    };
+    
+    return (
+      <svg viewBox="0 0 1000 1000" role="presentation" style={style}>
+        <path d="M971.5 379.5c9 28 2 50-20 67L725.4 618.6l87 280.1c11 39-18 75-54 75-12 0-23-4-33-12l-226.1-172-226.1 172.1c-25 17-59 12-78-12-12-16-15-33-8-51l86-278.1L46.1 446.5c-21-17-28-39-19-67 8-24 29-40 52-40h280.1l87-278.1c7-23 28-39 52-39 25 0 47 17 54 41l87 276.1h280.1c23.2 0 44.2 16 52.2 40z"></path>
+      </svg>
+    );
+  }
 
   // Total guests don't count the number of infants
   getTotalGuests() {
@@ -189,7 +207,7 @@ export default class CheckoutCalendar extends React.Component {
   }
 
   loadPrice(id, guests, nights) {
-    fetch(`${server}/api/listings/${id}/compute?guests=${guests}&nights=${nights}`)
+    return fetch(`${server}/api/listings/${id}/compute?guests=${guests}&nights=${nights}`)
       .then(response => response.json())
       .then((response) => {
         this.setState({
@@ -204,14 +222,37 @@ export default class CheckoutCalendar extends React.Component {
       });
   }
 
+  loadRating(id) {
+    return fetch(`${reviews_server}/api/homes/${id}/allReviews`)
+      .then(response => response.json())
+      .then((response) => {
+        this.setState({
+          rating: response[0].rateNumber,
+          numReviews: response[0].numberOfReviews,
+        });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
   render() {
     const {
       month, year, nights, price, personPerNight, cleaning, service, guests,
-      limit, showGuests, isChoosingCheckIn, checkinDay, checkoutDay, anchorEl,
+      limit, showGuests, isChoosingCheckIn, checkinDay, checkoutDay, anchorEl, rating, numReviews
     } = this.state;
     const checkinStr = checkinDay ? new Date(checkinDay).toLocaleDateString() : 'Check in';
     const checkoutStr = checkoutDay ? new Date(checkoutDay).toLocaleDateString() : 'Check out';
     const classes = `checkoutCard checkoutContainer ${ this.state.floating ? 'checkoutFloat' : 'checkoutNoFloat' }`;
+    
+    // Populate star data
+    const stars = [];
+    for (let i = 0; i < rating; i++) {
+      stars.push(true);
+    }
+    for (let i = 0; i < MAX_RATING - rating; i++) {
+      stars.push(false);
+    }
 
     return (
       <div id={this.props.small ? 'checkoutMaxWidth' : null} className={classes}>
@@ -229,6 +270,13 @@ export default class CheckoutCalendar extends React.Component {
             ) : <span>Loading...</span>
         }
         </span>
+        
+        { rating &&
+          <div id="checkoutStarGrid">
+            <span>{ stars.map(filled => this.getStar(filled)) }</span>
+            <span className="checkoutFont checkoutSmall checkoutReviewNum">{numReviews}</span>
+          </div>
+        }
 
         <hr />
         <label htmlFor="checkinInput" className="checkoutFont checkoutSmall">Dates</label>
