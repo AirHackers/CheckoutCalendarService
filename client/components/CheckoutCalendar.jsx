@@ -6,7 +6,7 @@ import Calendar from './Calendar';
 import Guests from './Guests';
 import Breakdown from './Breakdown';
 
-const ADULTS = 0, CHILDREN = 1, INFANTS = 2, MAX_INFANTS = 5;
+const ADULTS = 0, CHILDREN = 1, INFANTS = 2, MAX_INFANTS = 5,
   MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450, MAX_RATING = 5;
 const server = 'http://127.0.0.1:3004';
 const reviews_server = 'http://127.0.0.1:3003';
