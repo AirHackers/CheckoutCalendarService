@@ -6,7 +6,7 @@ import Calendar from './Calendar';
 import Guests from './Guests';
 import Breakdown from './Breakdown';
 
-const ADULTS = 0; const CHILDREN = 1; const INFANTS = 2; const
+const ADULTS = 0, CHILDREN = 1, INFANTS = 2, MAX_INFANTS = 5;
   MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450, MAX_RATING = 5;
 const server = 'http://127.0.0.1:3004';
 const reviews_server = 'http://127.0.0.1:3003';
@@ -104,7 +104,7 @@ export default class CheckoutCalendar extends React.Component {
 
   onRightBtnFor(idx) {
     const guests = this.state.guests;
-    if (idx === INFANTS || this.getTotalGuests() < this.state.limit) {
+    if ((idx === INFANTS && guests[idx] < MAX_INFANTS) || this.getTotalGuests() < this.state.limit) {
       guests[idx] += 1;
       this.setState({ guests });
       const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';
