@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const WEEK_ROWS = 5; const SIX_WEEK_ROWS = 6; const DAY_COLS = 7; const
   CELL_THRESHOLD = 35;
-const server = 'http://127.0.0.1:3004';
+const server = 'http://ec2-52-15-188-145.us-east-2.compute.amazonaws.com:3004';
 
 const CalendarHeader = ({
   btnClick, monthName, month, year,
