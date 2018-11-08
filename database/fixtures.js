@@ -3,30 +3,32 @@
 // and use the # of nights to calculate the start and end dates
 
 const seedData = (db) => {
-  const ROWS = 100;
+  const ROWS = 100, HOMES = 50;
   const SEC_IN_DAYS = 86400;
 
   // Form array of mock data
   let array = [];
 
   // Keep track of dates when setting data, start at July 1, 2018
-  let startDate = 1530403200;
 
-  for (let i = 0; i < ROWS; i += 1) {
-    const nights = Math.floor(Math.random() * 3) + 1;
-    const guests = Math.floor(Math.random() * 3) + 1;
+  for (let j = 0; j < HOMES; j += 1) {
+    let startDate = 1530403200;
+		for (let i = 0; i < ROWS; i += 1) {
+		  const nights = Math.floor(Math.random() * 3) + 1;
+		  const guests = Math.floor(Math.random() * 6) + 1;
 
-    array.push({
-      nights,
-      guests,
-      price: (100 + 7 * guests) * nights + 50,
-      startDate,
-      endDate: startDate + nights * SEC_IN_DAYS,
-      homeId: 0,
-    });
+		  array.push({
+		    nights,
+		    guests,
+		    price: (100 + 7 * guests) * nights + 50,
+		    startDate,
+		    endDate: startDate + nights * SEC_IN_DAYS,
+		    homeId: j,
+		  });
 
-    // Skip 0 days to a week to allow space for reservations
-    startDate += nights * SEC_IN_DAYS + (Math.floor(Math.random() * 7) * SEC_IN_DAYS);
+		  // Skip 0 days to a week to allow space for reservations
+		  startDate += nights * SEC_IN_DAYS + (Math.floor(Math.random() * 7) * SEC_IN_DAYS);
+		}
   }
 
   // Convert the JSON to parenthesis for all elements
