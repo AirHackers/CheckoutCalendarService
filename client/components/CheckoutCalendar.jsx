@@ -104,7 +104,7 @@ export default class CheckoutCalendar extends React.Component {
 
   onRightBtnFor(idx) {
     const guests = this.state.guests;
-    if ((idx === INFANTS && guests[idx] < MAX_INFANTS) || this.getTotalGuests() < this.state.limit) {
+    if ((idx === INFANTS && guests[idx] < MAX_INFANTS) || (idx !== INFANTS && this.getTotalGuests() < this.state.limit)) {
       guests[idx] += 1;
       this.setState({ guests });
       const infants = guests[INFANTS] > 0 ? `, ${this.state.guests[INFANTS]} infant` : '';

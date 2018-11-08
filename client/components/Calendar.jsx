@@ -113,7 +113,7 @@ export default class Calendar extends React.Component {
         return;
       }
 
-      if (clickDate.getTime() > midnightTmw) {
+      if (clickDate.getTime() >= midnightTmw) {
         // Determine whether to set this date as check out or check in
         let isCheckIn = isChoosingCheckIn;
         if (checkoutDay && checkoutDay <= clickDate.getTime()) {
