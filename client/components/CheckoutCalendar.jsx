@@ -8,8 +8,8 @@ import Breakdown from './Breakdown';
 
 const ADULTS = 0, CHILDREN = 1, INFANTS = 2, MAX_INFANTS = 5,
   MILLI_SEC_IN_DAY = 86400000, SCROLL_THRESHOLD = 450, MAX_RATING = 5;
-const server = 'http://127.0.0.1:3004';
-const reviews_server = 'http://127.0.0.1:3003';
+const server = 'http://ec2-18-224-180-203.us-east-2.compute.amazonaws.com:3004';
+const reviews_server = 'http://ec2-18-222-214-168.us-east-2.compute.amazonaws.com:3003';
 
 // For material-ui, use typography v2
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
